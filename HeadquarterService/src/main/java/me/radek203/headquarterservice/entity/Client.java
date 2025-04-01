@@ -24,6 +24,8 @@ public class Client {
     private String phone;
     private String address;
     private String city;
+
+    private String accountNumber;
     private double balance;
     private double balanceReserved;
 
