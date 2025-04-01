@@ -1,5 +1,7 @@
 package me.radek203.branchservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import me.radek203.branchservice.entity.Client;
@@ -17,18 +19,11 @@ public class ClientController {
 
     private KafkaTemplate<String, String> consumer;
     private ClientService clientService;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @PostMapping("/create")
-    public ResponseEntity<String> create(@Validated @RequestBody Client client) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String clientJson;
-        try {
-            clientJson = objectMapper.writeValueAsString(client);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error converting client to JSON");
-        }
-        consumer.send("headquarter-client-create", clientJson);
+    public ResponseEntity<String> create(@Validated @RequestBody Client client) throws JsonProcessingException {
+        consumer.send("headquarter-client-create", mapper.writeValueAsString(client));
         return ResponseEntity.ok("Message sent to Kafka topic");
     }
 

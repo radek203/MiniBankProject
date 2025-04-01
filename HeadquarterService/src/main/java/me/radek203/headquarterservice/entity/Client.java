@@ -1,4 +1,4 @@
-package me.radek203.branchservice.entity;
+package me.radek203.headquarterservice.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
