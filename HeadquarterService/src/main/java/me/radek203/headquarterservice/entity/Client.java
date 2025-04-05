@@ -1,22 +1,21 @@
 package me.radek203.headquarterservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @ToString
-@Entity
+@Entity(name = "client")
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
+    private ClientStatus status;
     private String firstName;
     private String lastName;
     private String email;
@@ -25,6 +24,8 @@ public class Client {
     private String address;
     private String city;
 
+    private int branch;
+    @Column(unique = true)
     private String accountNumber;
     private double balance;
     private double balanceReserved;

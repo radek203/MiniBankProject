@@ -20,6 +20,7 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
         try {
             message = mapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
             saveDeadLetter(topic, key, payload.toString(), e.getMessage(), "SEND");
             return;
         }
