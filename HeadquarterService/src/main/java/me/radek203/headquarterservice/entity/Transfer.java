@@ -1,10 +1,9 @@
 package me.radek203.headquarterservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,13 +14,16 @@ import lombok.*;
 public class Transfer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
     private String fromAccount;
     private String toAccount;
     private double amount;
     private String message;
-    private String status;
+    private TransferStatus status;
+    //@Transient
+    private int fromBranchId;
+    //@Transient
+    private int toBranchId;
     private long date;
 
 }

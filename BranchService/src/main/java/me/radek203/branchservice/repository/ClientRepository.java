@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -13,4 +14,6 @@ public interface ClientRepository extends CrudRepository<Client, UUID> {
 
     @Query(nativeQuery = true, value = "SELECT c.account_number FROM client c")
     List<String> getAllAccountNumbers();
+
+    Optional<Client> findByAccountNumber(String accountNumber);
 }
