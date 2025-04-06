@@ -2,7 +2,6 @@ package me.radek203.branchservice.config;
 
 import lombok.AllArgsConstructor;
 import me.radek203.branchservice.client.HeadquarterClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;

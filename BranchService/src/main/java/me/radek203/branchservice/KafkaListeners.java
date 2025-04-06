@@ -2,21 +2,14 @@ package me.radek203.branchservice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import me.radek203.branchservice.entity.Client;
 import me.radek203.branchservice.entity.Message;
 import me.radek203.branchservice.entity.Transfer;
-import me.radek203.branchservice.entity.TransferStatus;
 import me.radek203.branchservice.repository.ClientRepository;
-import me.radek203.branchservice.repository.TransferRepository;
-import me.radek203.branchservice.service.KafkaSenderService;
 import me.radek203.branchservice.service.PaymentService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
-import java.util.Optional;
 
 @AllArgsConstructor
 @Component

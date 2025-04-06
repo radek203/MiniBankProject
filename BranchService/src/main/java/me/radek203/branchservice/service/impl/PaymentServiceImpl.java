@@ -61,9 +61,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Transactional
-    void completeTransfer(Client client, Transfer transfer) {
-        client.setBalance(client.getBalance() + transfer.getAmount());
-        transfer.setStatus(TransferStatus.COMPLETED);
+    void acceptTransfer(Client client, Transfer transfer) {
+        client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
         clientRepository.save(client);
         transferRepository.save(transfer);
     }
@@ -77,9 +76,9 @@ public class PaymentServiceImpl implements PaymentService {
         }
         Client toClient = clientRepository.findByAccountNumber(transfer.getToAccount()).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
 
-        completeTransfer(toClient, transfer);
+        acceptTransfer(toClient, transfer);
 
-        kafkaSenderService.sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-completed", String.valueOf(transfer.getId()), transfer);
+        kafkaSenderService.sendMessage("headquarter-transfer-create", String.valueOf(transfer.getId()), transfer);
     }
 
     @Override
@@ -91,13 +90,23 @@ public class PaymentServiceImpl implements PaymentService {
         }
         transferRepository.deleteById(transfer.getId());
 
-        Optional<Client> fromClient = clientRepository.findByAccountNumber(transfer.getFromAccount());
-        if (fromClient.isEmpty()) {
+        Optional<Client> clientOptional;
+        if (transfer.getFromBranchId() == appProperties.getBranchId()) {
+            clientOptional = clientRepository.findByAccountNumber(transfer.getFromAccount());
+        } else {
+            clientOptional = clientRepository.findByAccountNumber(transfer.getToAccount());
+        }
+        if (clientOptional.isEmpty()) {
             return;
         }
-        Client client = fromClient.get();
-        client.setBalance(client.getBalance() + transfer.getAmount());
-        client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
+        Client client = clientOptional.get();
+
+        if (transfer.getFromBranchId() == appProperties.getBranchId()) {
+            client.setBalance(client.getBalance() + transfer.getAmount());
+            client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
+        } else {
+            client.setBalanceReserved(client.getBalanceReserved() + transfer.getAmount());
+        }
         clientRepository.save(client);
     }
 
@@ -110,12 +119,23 @@ public class PaymentServiceImpl implements PaymentService {
         }
         transferRepository.save(transfer);
 
-        Optional<Client> fromClient = clientRepository.findByAccountNumber(transfer.getFromAccount());
-        if (fromClient.isEmpty()) {
+        Optional<Client> clientOptional;
+        if (transfer.getFromBranchId() == appProperties.getBranchId()) {
+            clientOptional = clientRepository.findByAccountNumber(transfer.getFromAccount());
+        } else {
+            clientOptional = clientRepository.findByAccountNumber(transfer.getToAccount());
+        }
+        if (clientOptional.isEmpty()) {
             return;
         }
-        Client client = fromClient.get();
-        client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
+        Client client = clientOptional.get();
+
+        if (transfer.getFromBranchId() == appProperties.getBranchId()) {
+            client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
+        } else {
+            client.setBalance(client.getBalance() + transfer.getAmount());
+            client.setBalanceReserved(client.getBalanceReserved() + transfer.getAmount());
+        }
         clientRepository.save(client);
     }
 

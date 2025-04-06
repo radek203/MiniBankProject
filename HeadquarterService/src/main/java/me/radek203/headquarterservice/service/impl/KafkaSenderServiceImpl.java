@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import me.radek203.headquarterservice.entity.Client;
+import me.radek203.headquarterservice.entity.Transfer;
+import me.radek203.headquarterservice.entity.TransferStatus;
 import me.radek203.headquarterservice.service.KafkaSenderService;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,15 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
                     Client client = mapper.readValue(value, Client.class);
                     sendMessage("branch-" + client.getBranch() + "-client-create-error", String.valueOf(client.getId()), client);
                     return;
+                } catch (JsonProcessingException ignored) {
+                }
+            }
+            if (topic.equals("headquarter-transfer-create")) {
+                try {
+                    Transfer transfer = mapper.readValue(value, Transfer.class);
+                    transfer.setStatus(TransferStatus.FAILED);
+                    sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
+                    sendMessage("branch-" + transfer.getToBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
                 } catch (JsonProcessingException ignored) {
                 }
             }

@@ -24,6 +24,7 @@ public class ClientServiceImpl implements ClientService {
      * We do not check if generated account number exists in other branches, We can do it but, for our example
      * we want to show transaction compensation.
      * The best way to do this is to use e.g. prefix or suffix for every headquarter and branch.
+     *
      * @return random account number
      */
     private String getRandomAccountNumber() {
