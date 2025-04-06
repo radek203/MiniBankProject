@@ -10,8 +10,8 @@ import org.springframework.util.backoff.FixedBackOff;
 public class KafkaErrorHandlerConfig {
 
     @Bean
-    public DefaultErrorHandler errorHandler(KafkaSenderService kafkaSenderService) {
-        return new DefaultErrorHandler((record, exception) -> kafkaSenderService.saveDeadLetter(record.topic(), (String) record.key(), (String) record.value(), exception.getMessage(), KafkaSenderService.Direction.IN), new FixedBackOff(1000L, 3));
+    public DefaultErrorHandler errorHandler(KafkaSenderService sender) {
+        return new DefaultErrorHandler((record, exception) -> sender.handleKafkaError(record.topic(), (String) record.key(), (String) record.value(), exception.getMessage(), KafkaSenderService.Direction.IN), new FixedBackOff(1000L, 3));
     }
 
 }

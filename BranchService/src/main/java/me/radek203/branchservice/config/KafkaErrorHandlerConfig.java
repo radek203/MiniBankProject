@@ -11,7 +11,7 @@ public class KafkaErrorHandlerConfig {
 
     @Bean
     public DefaultErrorHandler errorHandler(KafkaSenderService kafkaSenderService) {
-        return new DefaultErrorHandler((record, exception) -> kafkaSenderService.saveDeadLetter(record.topic(), (String) record.key(), (String) record.value(), exception.getMessage(), KafkaSenderService.Direction.IN), new FixedBackOff(1000L, 3));
+        return new DefaultErrorHandler((record, exception) -> kafkaSenderService.handleKafkaError(record.topic(), (String) record.key(), (String) record.value(), exception.getMessage(), KafkaSenderService.Direction.IN), new FixedBackOff(1000L, 3));
     }
 
 }

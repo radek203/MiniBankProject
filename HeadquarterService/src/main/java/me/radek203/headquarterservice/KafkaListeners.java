@@ -19,25 +19,25 @@ public class KafkaListeners {
     private PaymentService paymentService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @KafkaListener(topics = "headquarter-client-create", groupId = "group_id")
+    @KafkaListener(topics = "headquarter-client-create", groupId = "hq_group")
     void listenerClientCreate(String data) throws JsonProcessingException {
         Client client = objectMapper.readValue(data, Client.class);
         clientService.createClient(client);
     }
 
-    @KafkaListener(topics = "headquarter-transfer-create", groupId = "group_id")
+    @KafkaListener(topics = "headquarter-transfer-create", groupId = "hq_group")
     void listenerTransfers(String data) throws JsonProcessingException {
         Transfer transfer = objectMapper.readValue(data, Transfer.class);
         paymentService.makeTransfer(transfer);
     }
 
-    @KafkaListener(topics = "headquarter-balance-deposit", groupId = "group_id")
+    @KafkaListener(topics = "headquarter-balance-deposit", groupId = "hq_group")
     void listenerBalanceDeposit(String data) throws JsonProcessingException {
         BalanceChange balanceChange = objectMapper.readValue(data, BalanceChange.class);
         paymentService.makeBalanceChange(balanceChange);
     }
 
-    @KafkaListener(topics = "headquarter-balance-withdraw", groupId = "group_id")
+    @KafkaListener(topics = "headquarter-balance-withdraw", groupId = "hq_group")
     void listenerBalanceWithdraw(String data) throws JsonProcessingException {
         BalanceChange balanceChange = objectMapper.readValue(data, BalanceChange.class);
         paymentService.makeBalanceChange(balanceChange);

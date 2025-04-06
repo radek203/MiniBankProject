@@ -1,14 +1,17 @@
-package me.radek203.branchservice.service.impl;
+package me.radek203.branchservice.service.impl.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import me.radek203.branchservice.config.AppProperties;
-import me.radek203.branchservice.entity.Transfer;
-import me.radek203.branchservice.entity.TransferStatus;
 import me.radek203.branchservice.service.KafkaSenderService;
+import me.radek203.branchservice.service.KafkaTopicErrorHandler;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -17,6 +20,12 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
     private ObjectMapper mapper = new ObjectMapper();
     private KafkaTemplate<String, String> kafkaTemplate;
     private AppProperties appProperties;
+    private final Map<String, KafkaTopicErrorHandler> handlers = new HashMap<>();
+
+    @PostConstruct
+    public void addHandlers() {
+        handlers.put("branch-" + appProperties.getBranchId() + "-transfer-create", KafkaTransferErrorHandlers.getKafkaTransferErrorHandler(this));
+    }
 
     @Override
     public void sendMessage(String topic, String key, Object payload) {
@@ -24,32 +33,28 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
         try {
             message = mapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
-            saveDeadLetter(topic, key, payload.toString(), e.getMessage(), Direction.OUT);
+            handleKafkaError(topic, key, payload.toString(), e.getMessage(), Direction.OUT);
             return;
         }
         kafkaTemplate.send(topic, key, message).whenComplete((result, exception) -> {
             if (exception != null) {
-                saveDeadLetter(topic, key, message, exception.getMessage(), Direction.OUT);
+                handleKafkaError(topic, key, message, exception.getMessage(), Direction.OUT);
             }
         });
     }
 
     @Override
-    public void saveDeadLetter(String topic, String key, String value, String error, Direction direction) {
-        // Implement the logic to save the dead letter message
-        // For example, you can log it or store it in a database
+    public void handleKafkaError(String topic, String key, String value, String error, Direction direction) {
         if (direction == Direction.IN) {
-            if (topic.equals("branch-" + appProperties.getBranchId() + "-transfer-create")) {
-                try {
-                    Transfer transfer = mapper.readValue(value, Transfer.class);
-                    transfer.setStatus(TransferStatus.FAILED);
-                    sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-failed", key, transfer);
-                    return;
-                } catch (JsonProcessingException ignored) {
-                }
+            if (getHandler(topic).handleError(key, value)) {
+                return;
             }
         }
         System.out.println("Dead letter saved: Topic: " + topic + ", Key: " + key + ", Value: " + value + " , Error: " + error + ", Direction: " + direction);
+    }
+
+    private KafkaTopicErrorHandler getHandler(String topic) {
+        return handlers.getOrDefault(topic, (key, value) -> false);
     }
 
 }
