@@ -3,6 +3,7 @@ package me.radek203.branchservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import me.radek203.branchservice.entity.BalanceChange;
 import me.radek203.branchservice.entity.Client;
 import me.radek203.branchservice.entity.Message;
 import me.radek203.branchservice.entity.Transfer;
@@ -53,6 +54,18 @@ public class KafkaListeners {
     void listenerTransferCompleted(String data) throws JsonProcessingException {
         Transfer transfer = objectMapper.readValue(data, Transfer.class);
         paymentService.completedTransfer(transfer);
+    }
+
+    @KafkaListener(topics = "branch-${branch.id}-balance-change-completed", groupId = "group_id")
+    void listenerBalanceChangeCompleted(String data) throws JsonProcessingException {
+        BalanceChange balanceChange = objectMapper.readValue(data, BalanceChange.class);
+        paymentService.completedBalanceChange(balanceChange);
+    }
+
+    @KafkaListener(topics = "branch-${branch.id}-balance-change-failed", groupId = "group_id")
+    void listenerBalanceChangeFailed(String data) throws JsonProcessingException {
+        BalanceChange balanceChange = objectMapper.readValue(data, BalanceChange.class);
+        paymentService.failedBalanceChange(balanceChange);
     }
 
 }

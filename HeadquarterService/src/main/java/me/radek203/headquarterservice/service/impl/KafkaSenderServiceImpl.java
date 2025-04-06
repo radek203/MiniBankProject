@@ -3,6 +3,7 @@ package me.radek203.headquarterservice.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import me.radek203.headquarterservice.entity.BalanceChange;
 import me.radek203.headquarterservice.entity.Client;
 import me.radek203.headquarterservice.entity.Transfer;
 import me.radek203.headquarterservice.entity.TransferStatus;
@@ -52,6 +53,13 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
                     transfer.setStatus(TransferStatus.FAILED);
                     sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
                     sendMessage("branch-" + transfer.getToBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
+                } catch (JsonProcessingException ignored) {
+                }
+            }
+            if (topic.equals("headquarter-balance-deposit") || topic.equals("headquarter-balance-withdraw")) {
+                try {
+                    BalanceChange balanceChange = mapper.readValue(value, BalanceChange.class);
+                    sendMessage("branch-" + balanceChange.getBranchId() + "-balance-change-failed", String.valueOf(balanceChange.getId()), balanceChange);
                 } catch (JsonProcessingException ignored) {
                 }
             }
