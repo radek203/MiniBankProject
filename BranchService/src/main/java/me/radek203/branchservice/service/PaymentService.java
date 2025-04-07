@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public interface PaymentService {
 
+    Transfer getTransfer(UUID id);
+
     Transfer makeTransfer(String fromAccount, String toAccount, String message, double amount);
 
     Transfer makePaymentTransfer(String fromAccount, UUID service, String message, double amount);

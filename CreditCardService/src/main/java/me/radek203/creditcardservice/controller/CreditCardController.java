@@ -29,8 +29,8 @@ public class CreditCardController {
         return ResponseEntity.ok(creditCardService.createCreditCard(bank, account));
     }
 
-    @DeleteMapping("/delete/{number}")
-    public ResponseEntity<Void> deleteCreditCard(@PathVariable String number) {
+    @DeleteMapping("/delete/{bank}/{number}")
+    public ResponseEntity<Void> deleteCreditCard(@PathVariable int bank, @PathVariable String number) {
         creditCardService.deleteCreditCard(number);
         return ResponseEntity.noContent().build();
     }

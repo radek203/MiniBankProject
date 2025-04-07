@@ -31,6 +31,11 @@ public class PaymentServiceImpl implements PaymentService {
     private final HeadquarterClient hqClient;
 
     @Override
+    public Transfer getTransfer(UUID id) {
+        return transferRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/transfer-not-found", String.valueOf(id)));
+    }
+
+    @Override
     @Transactional
     public Transfer makeTransfer(String fromAccount, String toAccount, String message, double amount) {
         if (amount <= 0) {
