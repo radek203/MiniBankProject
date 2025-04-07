@@ -1,0 +1,18 @@
+package me.radek203.creditcardservice.repository;
+
+import me.radek203.creditcardservice.entity.CreditCard;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface CreditCardRepository extends CrudRepository<CreditCard, Long> {
+
+    @Query(nativeQuery = true, value = "SELECT c.card_number FROM credit_card c")
+    List<String> getAllNumbers();
+
+    Optional<CreditCard> findByCardNumber(String cardNumber);
+}

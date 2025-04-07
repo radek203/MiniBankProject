@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @RestController
 public class ClientController {
@@ -19,6 +21,12 @@ public class ClientController {
     ResponseEntity<Integer> getBranchId(@PathVariable String account) {
         Client client = clientRepository.findByAccountNumber(account).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", account));
         return ResponseEntity.ok(client.getBranch());
+    }
+
+    @GetMapping("/client/{id}/account")
+    ResponseEntity<String> getAccountNumber(@PathVariable UUID id) {
+        Client client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(id)));
+        return ResponseEntity.ok(client.getAccountNumber());
     }
 
 }

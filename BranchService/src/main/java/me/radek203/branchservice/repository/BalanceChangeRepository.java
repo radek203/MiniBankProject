@@ -2,8 +2,10 @@ package me.radek203.branchservice.repository;
 
 import me.radek203.branchservice.entity.BalanceChange;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+@Repository
 public interface BalanceChangeRepository extends CrudRepository<BalanceChange, UUID> {
 }

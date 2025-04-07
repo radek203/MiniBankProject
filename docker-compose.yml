@@ -35,6 +35,18 @@ services:
       - sql-data-branch-2:/var/opt/mssql
     networks:
       - sb-network
+  ms-sql-credit-card:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ms-sql-credit-card
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MyStrongPassword123
+    ports:
+      - "1436:1433"
+    volumes:
+      - sql-data-credit-card:/var/opt/mssql
+    networks:
+      - sb-network
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -56,6 +68,13 @@ services:
       - "9092:9092"
     networks:
       - sb-network
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - sb-network
 
 networks:
   sb-network:
@@ -64,3 +83,4 @@ volumes:
   sql-data-hq:
   sql-data-branch-1:
   sql-data-branch-2:
+  sql-data-credit-card:

@@ -3,9 +3,13 @@ package me.radek203.branchservice.service;
 import me.radek203.branchservice.entity.BalanceChange;
 import me.radek203.branchservice.entity.Transfer;
 
+import java.util.UUID;
+
 public interface PaymentService {
 
     Transfer makeTransfer(String fromAccount, String toAccount, String message, double amount);
+
+    Transfer makePaymentTransfer(String fromAccount, UUID service, String message, double amount);
 
     void createTransfer(Transfer transfer);
 

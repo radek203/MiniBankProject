@@ -60,6 +60,16 @@ public class PaymentServiceImpl implements PaymentService {
         return transferSaved;
     }
 
+    @Override
+    @Transactional
+    public Transfer makePaymentTransfer(String fromAccount, UUID service, String message, double amount) {
+        ResponseEntity<String> toAccount = hqClient.getAccountNumber(service);
+        if (toAccount.getStatusCode() != HttpStatus.OK || toAccount.getBody() == null) {
+            throw new ResourceInvalidException("error/invalid-account");
+        }
+        return makeTransfer(fromAccount, toAccount.getBody(), message, amount);
+    }
+
     @Transactional
     void acceptTransfer(Client client, Transfer transfer) {
         client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
