@@ -47,6 +47,18 @@ services:
       - sql-data-credit-card:/var/opt/mssql
     networks:
       - sb-network
+  ms-sql-auth:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ms-sql-auth
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MyStrongPassword123
+    ports:
+      - "1437:1433"
+    volumes:
+      - sql-data-auth:/var/opt/mssql
+    networks:
+      - sb-network
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -84,3 +96,4 @@ volumes:
   sql-data-branch-1:
   sql-data-branch-2:
   sql-data-credit-card:
+  sql-data-auth:
