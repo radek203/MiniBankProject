@@ -73,13 +73,17 @@ export class AuthService {
     }
 
     postLogin(userForLogin: Login) {
-        return this.httpService.put<TokenResponse>('auth/login', userForLogin);
+        return this.httpService.post<TokenResponse>('auth/login', userForLogin);
     }
 
     postRefreshToken() {
-        return this.httpService.put<TokenResponse>('auth/refresh', {
+        return this.httpService.post<TokenResponse>('auth/refresh', {
             token: this.loginToken
         });
+    }
+
+    getUserByToken(token: string) {
+        return this.httpService.post<User>('auth/validate', {'token': token});
     }
 
 }

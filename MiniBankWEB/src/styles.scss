@@ -2,8 +2,10 @@
     --bg-color: #060508;
     --second-bg-color: #131727;
     --button-color: #4053da;
+    --button-hover-color: #4e6bff;
     --main-font-color: #ffffff;
     --second-font-color: #ababac;
+    --error-color: #cf4040;
 }
 
 html {
@@ -23,4 +25,57 @@ a {
 
 .color-second {
     color: var(--second-font-color);
+}
+
+.error {
+    color: var(--error-color);
+}
+
+button, label, input, select, textarea {
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+button {
+    background-color: var(--button-color);
+    color: var(--main-font-color);
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover {
+        background-color: var(--button-hover-color);
+    }
+}
+
+input {
+    background-color: var(--bg-color);
+    color: var(--main-font-color);
+    border: 1px solid var(--second-font-color);
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+
+    &:focus {
+        border-color: var(--button-hover-color);
+        outline: none;
+    }
 }

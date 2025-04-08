@@ -19,8 +19,8 @@
             <div class="profile">
                 <img src="https://avatars.githubusercontent.com/u/57212337?v=4" alt="Profile Picture" class="profile-picture">
                 <div class="profile-data">
-                    <span class="profile-email">r.porebinski&#64;gmail.com</span><br>
-                    <span class="profile-username color-second">&#64;radek203</span>
+                    <span class="profile-email">{{ authService.user.email }}</span><br>
+                    <span class="profile-username color-second">&#64;{{ authService.user.username }}</span>
                 </div>
             </div>
         }
