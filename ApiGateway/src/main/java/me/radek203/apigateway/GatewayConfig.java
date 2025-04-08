@@ -15,11 +15,17 @@ public class GatewayConfig {
                         .uri("lb://auth-service"))
                 .route(r -> r.path("/client/**")
                         .uri("lb://headquarter-service"))
-                .route(r -> r.path("/krakow/transfer/**")
-                        .filters(f -> f.rewritePath("/krakow/transfer/(?<segment>.*)", "/transfer/${segment}"))
+                .route(r -> r.path("/krakow/transfer/**", "/krakow/account/**")
+                        .filters(f -> f
+                                .rewritePath("/krakow/transfer/(?<segment>.*)", "/transfer/${segment}")
+                                .rewritePath("/krakow/account/(?<segment>.*)", "/account/${segment}")
+                        )
                         .uri("http://localhost:8082"))
-                .route(r -> r.path("/warsaw/transfer/**")
-                        .filters(f -> f.rewritePath("/warsaw/transfer/(?<segment>.*)", "/transfer/${segment}"))
+                .route(r -> r.path("/warsaw/transfer/**", "/warsaw/account/**")
+                        .filters(f -> f
+                                .rewritePath("/warsaw/transfer/(?<segment>.*)", "/transfer/${segment}")
+                                .rewritePath("/warsaw/account/(?<segment>.*)", "/account/${segment}")
+                        )
                         .uri("http://localhost:8083"))
                 .build();
     }

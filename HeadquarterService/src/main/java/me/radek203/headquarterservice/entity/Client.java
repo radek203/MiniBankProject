@@ -20,8 +20,7 @@ public class Client {
     private ClientStatus status;
     private String firstName;
     private String lastName;
-    private String email;
-    private String password;
+    private int userId;
     private String phone;
     private String address;
     private String city;
