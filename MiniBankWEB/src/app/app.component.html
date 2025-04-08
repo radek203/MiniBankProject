@@ -1,18 +1,31 @@
 <div class="main">
     <div class="menu">
-        <h2><i class="fa-solid fa-piggy-bank"></i> MiniBankProject</h2>
+        <h2><i class="fa-solid fa-piggy-bank"></i> {{ pageConfig.name }}</h2>
         <nav role="navigation" aria-label="Main Menu">
             <div class="nav-menu">
-                <a href="/login" class="nav-link selected"><i class="fa-solid fa-right-to-bracket"></i> Sign in</a>
-                <a href="/login" class="nav-link"><i class="fa-solid fa-user-plus"></i> Sign up</a>
-                <a href="/accounts" class="nav-link"><i class="fa-solid fa-users"></i> Accounts</a>
-                <a href="/dashboard" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-                <a href="/cards" class="nav-link"><i class="fa-solid fa-credit-card"></i> Credit Cards</a>
-                <a href="/settings" class="nav-link"><i class="fa-solid fa-gears"></i> Settings</a>
-                <a href="/logout" class="nav-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                @if (authService.isAuth) {
+                    <a routerLink="/accounts" routerLinkActive="selected" class="nav-link"><i class="fa-solid fa-users"></i> Accounts</a>
+                    <a routerLink="/dashboard" routerLinkActive="selected" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                    <a routerLink="/cards" routerLinkActive="selected" class="nav-link"><i class="fa-solid fa-credit-card"></i> Credit Cards</a>
+                    <a routerLink="/settings" routerLinkActive="selected" class="nav-link"><i class="fa-solid fa-gears"></i> Settings</a>
+                    <a (click)="onLogout()" routerLinkActive="selected" class="nav-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                } @else {
+                    <a routerLink="/login" routerLinkActive="selected" class="nav-link"><i class="fa-solid fa-right-to-bracket"></i> Sign in</a>
+                    <a routerLink="/register" routerLinkActive="selected" class="nav-link"><i class="fa-solid fa-user-plus"></i> Sign up</a>
+                }
             </div>
         </nav>
+        @if (authService.isAuth) {
+            <div class="profile">
+                <img src="https://avatars.githubusercontent.com/u/57212337?v=4" alt="Profile Picture" class="profile-picture">
+                <div class="profile-data">
+                    <span class="profile-email">r.porebinski&#64;gmail.com</span><br>
+                    <span class="profile-username color-second">&#64;radek203</span>
+                </div>
+            </div>
+        }
     </div>
     <div class="content">
+        <router-outlet/>
     </div>
 </div>

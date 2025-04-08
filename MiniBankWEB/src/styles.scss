@@ -3,7 +3,7 @@
     --second-bg-color: #131727;
     --button-color: #4053da;
     --main-font-color: #ffffff;
-    --second-font-color: #b5b4b4;
+    --second-font-color: #ababac;
 }
 
 html {
@@ -19,4 +19,8 @@ html {
 a {
     color: var(--main-font-color);
     text-decoration: none;
+}
+
+.color-second {
+    color: var(--second-font-color);
 }
