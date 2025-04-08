@@ -66,11 +66,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void validateToken(final JWTAuthentication authentication) {
+    public UserDTO validateToken(final JWTAuthentication authentication) {
         final String username = jwtService.getUsername(authentication.getToken());
         if (!jwtService.isTokenValid(authentication.getToken(), username)) {
             throw new ResourceInvalidException("token/invalid", authentication.getToken());
         }
+
+        final User finalUser = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("user/not-found", username));
+        return UserMapper.mapUserToUserDTO(finalUser);
     }
 
 }

@@ -36,9 +36,8 @@ public class AuthController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<Void> validateToken(@Valid @RequestBody final JWTAuthentication authentication) {
-        authService.validateToken(authentication);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserDTO> validateToken(@Valid @RequestBody final JWTAuthentication authentication) {
+        return ResponseEntity.ok(authService.validateToken(authentication));
     }
 
 }

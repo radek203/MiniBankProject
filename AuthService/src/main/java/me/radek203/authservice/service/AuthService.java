@@ -11,6 +11,6 @@ public interface AuthService {
     User createUser(UserDTO user);
     JWTAuthentication authenticateUser(LoginDTO user);
     JWTAuthentication authenticateUser(JWTAuthentication authentication);
-    void validateToken(JWTAuthentication authentication);
+    UserDTO validateToken(JWTAuthentication authentication);
 
 }

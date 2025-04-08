@@ -9,6 +9,7 @@ import me.radek203.authservice.exception.ResourceInvalidException;
 import me.radek203.authservice.exception.ResourceNotFoundException;
 import me.radek203.authservice.mapper.UserMapper;
 import me.radek203.authservice.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,7 +53,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private static String getTokenFromRequest(final HttpServletRequest request) {
-        final String bearerToken = request.getHeader("Authorization");
+        final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
