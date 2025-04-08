@@ -1,0 +1,22 @@
+<div class="row">
+    @for (account of accounts; let accountIndex = $index; track accountIndex) {
+        <div class="col-md-6">
+            <div class="account">
+                <div class="account-content">
+                    <h3><i class="fa-solid fa-wallet"></i> {{ account.accountNumber | formatAccountNumber }}</h3>
+                    <div class="account-balance">
+                        <span class="color-second">BALANCE</span>
+                        <span class="account-balance-title">{{ account.balance | currency }}</span>
+                    </div>
+                    <p><strong>Owner: </strong> {{ account.firstName }} {{ account.lastName }}</p>
+                </div>
+                <div class="account-branch">
+                    <img [src]="'img/' + getBranchShortName(account.branch) + '.png'" alt="Branch Logo" class="account-branch-logo">
+                    <span class="account-branch-name">{{ getBranchName(account.branch) }}</span>
+                    <span class="color-second"><i class="fa-solid fa-building"></i> BRANCH</span>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

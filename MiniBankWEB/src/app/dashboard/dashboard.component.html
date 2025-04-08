@@ -1,1 +1,6 @@
-<p>dashboard works!</p>
+<app-accounts [accounts]="accounts"></app-accounts>
+<div class="row">
+    <app-transfer [accounts]="accounts" class="col-md-4"></app-transfer>
+    <app-deposit [accounts]="accounts" class="col-md-4"></app-deposit>
+    <app-withdraw [accounts]="accounts" class="col-md-4"></app-withdraw>
+</div>

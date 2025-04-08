@@ -1,0 +1,60 @@
+.col-md-6 {
+    padding: 20px;
+}
+
+.account {
+    padding: 20px;
+    background: linear-gradient(135deg, #2c2f43, #131727);
+    background-size: 120% 120%;
+    transition: background-position 0.5s ease, box-shadow 0.5s ease;
+    border-radius: 20px;
+    border: 1px solid var(--second-font-color);
+    box-shadow: 0 4px 8px 0 rgba(39, 39, 39, 0.4), 0 6px 20px 0 rgba(39, 39, 39, 0.4);
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+
+    &:hover {
+        background-position: right center;
+        box-shadow: 0 4px 8px 0 rgba(39, 39, 39, 0.8), 0 6px 20px 0 rgba(39, 39, 39, 0.8);
+    }
+
+    &-content {
+        grid-area: 1 / 1 / 6 / 5;
+    }
+
+    &-balance {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        &-title {
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--main-font-color);
+        }
+    }
+
+    &-branch {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        grid-area: 1 / 5 / 6 / 6;
+
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        &-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--main-font-color);
+        }
+    }
+}

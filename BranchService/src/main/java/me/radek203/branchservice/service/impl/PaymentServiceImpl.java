@@ -41,6 +41,9 @@ public class PaymentServiceImpl implements PaymentService {
         if (amount <= 0) {
             throw new ResourceInvalidException("error/invalid-amount");
         }
+        if (fromAccount.equals(toAccount)) {
+            throw new ResourceInvalidException("error/invalid-account");
+        }
 
         Client fromClient = clientRepository.findByAccountNumber(fromAccount).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", fromAccount));
 

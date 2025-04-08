@@ -6,7 +6,6 @@ export const routes: Routes = [
     {'path': '', redirectTo: 'dashboard', pathMatch: 'full'},
     {
         'path': '', canActivate: [authGuard], children: [
-            {'path': 'accounts', loadComponent: () => import('./accounts/accounts.component').then(file => file.AccountsComponent)},
             {'path': 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(file => file.DashboardComponent)},
             {'path': 'cards', loadComponent: () => import('./cards/cards.component').then(file => file.CardsComponent)},
             {'path': 'settings', loadComponent: () => import('./settings/settings.component').then(file => file.SettingsComponent)}

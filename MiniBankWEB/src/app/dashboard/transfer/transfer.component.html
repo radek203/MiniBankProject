@@ -1,0 +1,43 @@
+<span class="heading">Transfer</span>
+<form [formGroup]="transferForm" (ngSubmit)="sendTransfer()" class="transfer-form">
+    <div class="form-group">
+        <label for="fromAccount">Select source account:</label>
+        <select id="fromAccount" formControlName="fromAccount">
+            <option [ngValue]="null" disabled selected>-- Select account --</option>
+            <option *ngFor="let account of accounts" [ngValue]="account.accountNumber">
+                {{ account.accountNumber | formatAccountNumber }}
+            </option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="toAccount">Target account number:</label>
+        <input
+            id="toAccount"
+            type="text"
+            formControlName="toAccount"
+            placeholder="26 numbers"
+            (input)="formatAccountNumber()"
+        />
+        <div class="error" *ngIf="transferForm.get('toAccount')?.invalid && transferForm.get('toAccount')?.touched">
+            Enter a valid account number (26 digits).
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input
+            id="amount"
+            type="number"
+            min="0.01"
+            step="0.01"
+            formControlName="amount"
+            placeholder="Amount in USD"
+        />
+        <div class="error" *ngIf="transferForm.get('amount')?.invalid && transferForm.get('amount')?.touched">
+            Enter a valid amount (greater than 0).
+        </div>
+    </div>
+
+    <button type="submit" [disabled]="transferForm.invalid">Transfer</button>
+</form>

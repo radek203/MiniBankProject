@@ -31,7 +31,13 @@ a {
     color: var(--error-color);
 }
 
-button, label, input, select, textarea {
+.heading {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--main-font-color);
+}
+
+button, label, input, select, textarea, select, option {
     font-family: "Space Grotesk", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
@@ -65,7 +71,7 @@ button {
     }
 }
 
-input {
+input, select {
     background-color: var(--bg-color);
     color: var(--main-font-color);
     border: 1px solid var(--second-font-color);

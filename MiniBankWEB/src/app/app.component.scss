@@ -7,10 +7,12 @@
 }
 
 .menu {
-    height: 100vh;
+    height: 100%;
+    width: calc(100% / 6);
     grid-area: 1 / 1 / 6 / 2;
     padding: 20px;
     box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.8);
+    position: fixed;
 
     .nav-menu {
         margin-left: 14px;
