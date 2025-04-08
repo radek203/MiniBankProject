@@ -1,0 +1,22 @@
+:root {
+    --bg-color: #060508;
+    --second-bg-color: #131727;
+    --button-color: #4053da;
+    --main-font-color: #ffffff;
+    --second-font-color: #b5b4b4;
+}
+
+html {
+    background-color: var(--bg-color);
+    color: var(--main-font-color);
+
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+a {
+    color: var(--main-font-color);
+    text-decoration: none;
+}

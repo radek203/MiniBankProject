@@ -32,7 +32,7 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+                "src/styles.scss", "src/fonts.scss", "src/grid.scss", "src/icons.scss", "src/normalize.scss"
             ],
             "scripts": []
           },
@@ -91,7 +91,7 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+                "src/styles.scss", "src/fonts.scss", "src/grid.scss", "src/icons.scss", "src/normalize.scss"
             ],
             "scripts": []
           }
