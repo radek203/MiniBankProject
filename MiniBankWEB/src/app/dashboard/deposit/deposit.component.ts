@@ -3,6 +3,7 @@ import {Client} from '../../models/client.model';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormatAccountNumberPipe} from '../../format-account-number.pipe';
+import {AccountService} from '../../services/account.service';
 
 @Component({
   selector: 'app-deposit',
@@ -19,9 +20,7 @@ export class DepositComponent {
 
     transferForm!: FormGroup;
 
-    @Input() accounts: Client[] = [];
-
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: FormBuilder, protected accountService: AccountService) {}
 
     ngOnInit(): void {
         this.transferForm = this.fb.group({

@@ -18,22 +18,9 @@ import {WithdrawComponent} from './withdraw/withdraw.component';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
 
-    protected accounts: Client[] = [];
-
-    constructor(private authService: AuthService, private accountService: AccountService) {
-    }
-
-    ngOnInit(): void {
-        this.accountService.getAccounts(this.authService.user.id).subscribe({
-            next: (response) => {
-                this.accounts = response;
-            },
-            error: (error) => {
-                console.error('Error fetching accounts:', error);
-            }
-        })
+    constructor(protected authService: AuthService) {
     }
 
 }

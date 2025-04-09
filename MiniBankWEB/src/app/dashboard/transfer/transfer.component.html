@@ -4,7 +4,7 @@
         <label for="fromAccount">Select source account:</label>
         <select id="fromAccount" formControlName="fromAccount">
             <option [ngValue]="null" disabled selected>-- Select account --</option>
-            <option *ngFor="let account of accounts" [ngValue]="account.accountNumber">
+            <option *ngFor="let account of this.accountService.accounts" [ngValue]="account.accountNumber">
                 {{ account.accountNumber | formatAccountNumber }}
             </option>
         </select>

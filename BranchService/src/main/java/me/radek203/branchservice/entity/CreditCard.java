@@ -1,12 +1,11 @@
-package me.radek203.creditcardservice.entity;
+package me.radek203.branchservice.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreditCard {
@@ -16,8 +15,5 @@ public class CreditCard {
     private String accountNumber;
     private String expirationDate;
     private String cvv;
-
-    @ManyToOne
-    private Bank bank;
 
 }

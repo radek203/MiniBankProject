@@ -1,5 +1,5 @@
 <div class="row">
-    @for (account of accounts; let accountIndex = $index; track accountIndex) {
+    @for (account of this.accountService.accounts; let accountIndex = $index; track accountIndex) {
         <div class="col-md-6">
             <div class="account">
                 <div class="account-content">

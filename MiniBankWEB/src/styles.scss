@@ -69,6 +69,14 @@ button {
     &:hover {
         background-color: var(--button-hover-color);
     }
+
+    &.red {
+        background-color: var(--error-color);
+
+        &:hover {
+            background-color: #cf4040;
+        }
+    }
 }
 
 input, select {

@@ -28,7 +28,7 @@ public class CorsGlobalConfiguration {
             HttpHeaders headers = response.getHeaders();
             headers.setAccessControlAllowOrigin(ALLOWED_ORIGIN);
             headers.setAccessControlAllowMethods(Arrays.asList(
-                    HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS
+                    HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS, HttpMethod.PATCH
             ));
             headers.setAccessControlAllowHeaders(Arrays.asList(
                     "Authorization", "Content-Type", "X-Requested-With"

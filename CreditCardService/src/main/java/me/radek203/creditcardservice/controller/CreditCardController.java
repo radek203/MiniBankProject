@@ -8,6 +8,7 @@ import me.radek203.creditcardservice.service.CreditCardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -16,6 +17,11 @@ import java.util.UUID;
 public class CreditCardController {
 
     private CreditCardService creditCardService;
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<CreditCard>> getCreditCards(@PathVariable int userId) {
+        return ResponseEntity.ok(creditCardService.getCreditCards(userId));
+    }
 
     //This endpoint should be secured
     @PostMapping("/create")
@@ -29,8 +35,8 @@ public class CreditCardController {
         return ResponseEntity.ok(creditCardService.createCreditCard(bank, account));
     }
 
-    @DeleteMapping("/delete/{bank}/{number}")
-    public ResponseEntity<Void> deleteCreditCard(@PathVariable int bank, @PathVariable String number) {
+    @DeleteMapping("/delete/{number}")
+    public ResponseEntity<Void> deleteCreditCard(@PathVariable String number) {
         creditCardService.deleteCreditCard(number);
         return ResponseEntity.noContent().build();
     }

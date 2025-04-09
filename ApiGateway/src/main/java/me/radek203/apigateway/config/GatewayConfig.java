@@ -13,6 +13,8 @@ public class GatewayConfig {
         return builder.routes()
                 .route(r -> r.path("/auth/**")
                         .uri("lb://auth-service"))
+                .route(r -> r.path("/creditcard/**")
+                        .uri("lb://credit-card-service"))
                 .route(r -> r.path("/client/**")
                         .uri("lb://headquarter-service"))
                 .route(r -> r.path("/krakow/transfer/**", "/krakow/account/**")

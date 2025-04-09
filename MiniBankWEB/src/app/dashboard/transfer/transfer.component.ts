@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {DecimalPipe, NgForOf, NgIf} from '@angular/common';
 import {FormatAccountNumberPipe} from '../../format-account-number.pipe';
 import {Client} from '../../models/client.model';
+import {AccountService} from '../../services/account.service';
 
 @Component({
   selector: 'app-transfer',
@@ -20,9 +21,7 @@ export class TransferComponent implements OnInit {
 
     transferForm!: FormGroup;
 
-    @Input() accounts: Client[] = [];
-
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: FormBuilder, protected accountService: AccountService) {}
 
     ngOnInit(): void {
         this.transferForm = this.fb.group({

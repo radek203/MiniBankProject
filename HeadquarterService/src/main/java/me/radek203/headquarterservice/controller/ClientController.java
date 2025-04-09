@@ -34,4 +34,9 @@ public class ClientController {
         return ResponseEntity.ok(clientService.getClientsByUserId(id));
     }
 
+    @GetMapping("/{id}/accounts")
+    ResponseEntity<List<String>> getAccountsByUserId(@PathVariable int id) {
+        return ResponseEntity.ok(clientService.getClientsByUserId(id).stream().map(Client::getAccountNumber).toList());
+    }
+
 }

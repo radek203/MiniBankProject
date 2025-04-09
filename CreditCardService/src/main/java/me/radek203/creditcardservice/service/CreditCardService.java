@@ -4,9 +4,12 @@ import me.radek203.creditcardservice.entity.Bank;
 import me.radek203.creditcardservice.entity.CreditCard;
 import me.radek203.creditcardservice.entity.Transfer;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CreditCardService {
+
+    List<CreditCard> getCreditCards(int userId);
 
     Bank createBank(Bank bank);
 

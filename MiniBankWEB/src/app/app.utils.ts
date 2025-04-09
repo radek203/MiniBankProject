@@ -13,3 +13,11 @@ export function getBranchShortName(id: number): string {
     ];
     return branchShortNames[(id - 1)];
 }
+
+export function getBranchUrl(id: number): string {
+    const branchUrls = [
+        'krakow',
+        'warsaw'
+    ];
+    return branchUrls[(id - 1)];
+}

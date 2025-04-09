@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +16,6 @@ public interface CreditCardRepository extends CrudRepository<CreditCard, Long> {
     List<String> getAllNumbers();
 
     Optional<CreditCard> findByCardNumber(String cardNumber);
+
+    List<CreditCard> findAllByAccountNumberIn(Collection<String> accountNumbers);
 }

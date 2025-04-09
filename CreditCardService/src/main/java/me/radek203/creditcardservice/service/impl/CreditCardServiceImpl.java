@@ -1,6 +1,7 @@
 package me.radek203.creditcardservice.service.impl;
 
 import lombok.AllArgsConstructor;
+import me.radek203.creditcardservice.client.HeadquarterClient;
 import me.radek203.creditcardservice.entity.Bank;
 import me.radek203.creditcardservice.entity.CreditCard;
 import me.radek203.creditcardservice.entity.Transfer;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreditCardServiceImpl implements CreditCardService {
 
+    private HeadquarterClient headquarterClient;
     private BankRepository bankRepository;
     private CreditCardRepository creditCardRepository;
 
@@ -47,6 +49,16 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     private String getRandomCvvNumber() {
         return generateRandomString(3);
+    }
+
+    @Override
+    public List<CreditCard> getCreditCards(int userId) {
+        ResponseEntity<List<String>> accounts = headquarterClient.getAccountsByUserId(userId);
+        if (accounts.getStatusCode() != HttpStatus.OK || accounts.getBody() == null) {
+            throw new ResourceNotFoundException("error/accounts-not-found");
+        }
+        List<String> accountNumbers = accounts.getBody();
+        return creditCardRepository.findAllByAccountNumberIn(accountNumbers);
     }
 
     @Override
