@@ -6,6 +6,7 @@ import {TokenResponse} from "../models/token.model";
 import {Registration} from "../models/registration.model";
 import {emptyUser, User} from "../models/user.model";
 import {Subject} from "rxjs";
+import {UserUpdate} from '../models/user-update.model';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -84,6 +85,10 @@ export class AuthService {
 
     getUserByToken(token: string) {
         return this.httpService.post<User>('auth/validate', {'token': token});
+    }
+
+    updateUser(userId: number, user: UserUpdate) {
+        return this.httpService.put<User>('auth/update/' + userId, user);
     }
 
 }

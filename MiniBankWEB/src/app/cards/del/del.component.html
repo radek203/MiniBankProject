@@ -1,0 +1,17 @@
+<div class="col-md-4">
+    <span class="heading">Delete Card</span>
+    <form [formGroup]="deleteForm" (ngSubmit)="deleteCard()">
+        <label for="card">Select card:</label>
+        <select id="card" formControlName="card">
+            <option [ngValue]="null" disabled selected>-- Select card --</option>
+            <option *ngFor="let card of this.cardsService.cards" [ngValue]="card.cardNumber">
+                {{ card.cardNumber | formatCardNumber }}
+            </option>
+        </select>
+        <div class="error" *ngIf="deleteForm.get('card')?.invalid && deleteForm.get('card')?.touched">
+            Please select a card to delete.
+        </div>
+
+        <button type="submit" class="red">Delete Card</button>
+    </form>
+</div>

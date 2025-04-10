@@ -5,6 +5,7 @@ import me.radek203.authservice.entities.Role;
 import me.radek203.authservice.entities.User;
 import me.radek203.authservice.entities.dto.LoginDTO;
 import me.radek203.authservice.entities.dto.UserDTO;
+import me.radek203.authservice.entities.dto.UserUpdateDTO;
 import me.radek203.authservice.exception.ResourceAlreadyExistsException;
 import me.radek203.authservice.exception.ResourceInvalidException;
 import me.radek203.authservice.exception.ResourceNotFoundException;
@@ -66,14 +67,29 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserDTO validateToken(final JWTAuthentication authentication) {
+    public User validateToken(final JWTAuthentication authentication) {
         final String username = jwtService.getUsername(authentication.getToken());
         if (!jwtService.isTokenValid(authentication.getToken(), username)) {
             throw new ResourceInvalidException("token/invalid", authentication.getToken());
         }
 
-        final User finalUser = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("user/not-found", username));
-        return UserMapper.mapUserToUserDTO(finalUser);
+        return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("user/not-found", username));
+    }
+
+    @Override
+    public User updateUser(int userId, UserUpdateDTO user) {
+        final User finalUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user/not-found", userId));
+
+        try {
+            authenticateUser(new LoginDTO(finalUser.getUsername(), user.getOldPassword()));
+        } catch (Exception e) {
+            throw new ResourceInvalidException("user/invalid-password", user.getOldPassword());
+        }
+
+        finalUser.setUsername(user.getUsername());
+        finalUser.setEmail(user.getEmail());
+        finalUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(finalUser);
     }
 
 }

@@ -1,5 +1,5 @@
 <div class="cards">
-    @for (card of cards; let cardIndex = $index; track cardIndex) {
+    @for (card of this.cardsService.cards; let cardIndex = $index; track cardIndex) {
         <div class="card-front">
             <div class="number">
                 {{ card.cardNumber | formatCardNumber }}
@@ -23,9 +23,6 @@
                     <use href="#chip-lines" />
                 </svg>
             </div>
-            <svg class="contactless" role="img" viewBox="0 0 24 24">
-                <use href="#contactless" />
-            </svg>
         </div>
 
     }
@@ -45,112 +42,11 @@
     </g>
 </svg>
 
-<svg id="contactless">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-    <path d="M9.172 15.172a4 4 0 0 1 5.656 0"></path>
-    <path d="M6.343 12.343a8 8 0 0 1 11.314 0"></path>
-    <path d="M3.515 9.515c4.686 -4.687 12.284 -4.687 17 0"></path>
-</svg>
-
 @if (this.accountService.accounts.length > 0) {
     <div class="row">
-        <div class="col-md-4">
-            <span class="heading">Order New Card</span>
-            <form [formGroup]="orderForm" (ngSubmit)="orderCard()">
-                <label for="account">Select account:</label>
-                <select id="account" formControlName="account">
-                    <option [ngValue]="null" disabled selected>-- Select account --</option>
-                    <option *ngFor="let account of accountService.accounts" [ngValue]="account.accountNumber">
-                        {{ account.accountNumber | formatAccountNumber }}
-                    </option>
-                </select>
-                <div class="error" *ngIf="orderForm.get('account')?.invalid && orderForm.get('account')?.touched">
-                    Please select an account.
-                </div>
-
-                <button type="submit">Order New Card</button>
-            </form>
-        </div>
-
-        <div class="col-md-4">
-            <span class="heading">Delete Card</span>
-            <form [formGroup]="deleteForm" (ngSubmit)="deleteCard()">
-                <label for="card">Select card:</label>
-                <select id="card" formControlName="card">
-                    <option [ngValue]="null" disabled selected>-- Select card --</option>
-                    <option *ngFor="let card of cards" [ngValue]="card.cardNumber">
-                        {{ card.cardNumber | formatCardNumber }}
-                    </option>
-                </select>
-                <div class="error" *ngIf="deleteForm.get('card')?.invalid && deleteForm.get('card')?.touched">
-                    Please select a card to delete.
-                </div>
-
-                <button type="submit" class="red">Delete Card</button>
-            </form>
-        </div>
-
-        <div class="col-md-4">
-            <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
-
-                <label for="cardNumber">Card Number:</label>
-                <input
-                    id="cardNumber"
-                    formControlName="cardNumber"
-                    placeholder="1234 4567 9012 3456"
-                    (input)="formatCardNumber()"
-                />
-                <div class="error" *ngIf="paymentForm.get('cardNumber')?.invalid && paymentForm.get('cardNumber')?.touched">
-                    Enter a valid card number (16 digits).
-                </div>
-
-                <label for="expirationDate">Expiration Date (MM/YY):</label>
-                <input
-                    id="expirationDate"
-                    formControlName="expirationDate"
-                    placeholder="MM/YY"
-                    maxlength="5"
-                />
-                <div class="error" *ngIf="paymentForm.get('expirationDate')?.invalid && paymentForm.get('expirationDate')?.touched">
-                    Enter a valid expiration date in MM/YY format.
-                </div>
-
-                <label for="cvv">CVV:</label>
-                <input
-                    id="cvv"
-                    formControlName="cvv"
-                    placeholder="123"
-                    maxlength="3"
-                />
-                <div class="error" *ngIf="paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched">
-                    CVV must be 3 digits.
-                </div>
-
-                <label for="uuid">Service UUID:</label>
-                <input
-                    id="uuid"
-                    formControlName="uuid"
-                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                />
-                <div class="error" *ngIf="paymentForm.get('uuid')?.invalid && paymentForm.get('uuid')?.touched">
-                    Enter a valid UUID.
-                </div>
-
-                <label for="amount">Amount:</label>
-                <input
-                    id="amount"
-                    formControlName="amount"
-                    type="number"
-                    step="0.01"
-                    placeholder="100.00"
-                />
-                <div class="error" *ngIf="paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched">
-                    Enter a valid amount greater than 0.
-                </div>
-
-                <button type="submit" class="btn btn-success">Pay</button>
-            </form>
-        </div>
+        <app-order class="col-md-4"></app-order>
+        <app-del class="col-md-4"></app-del>
+        <app-payment class="col-md-4"></app-payment>
     </div>
 } @else {
     <p class="no-accounts">No accounts available. Please create an account first.</p>

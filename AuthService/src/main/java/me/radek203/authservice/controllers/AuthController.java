@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import me.radek203.authservice.entities.dto.LoginDTO;
 import me.radek203.authservice.entities.dto.UserDTO;
+import me.radek203.authservice.entities.dto.UserUpdateDTO;
 import me.radek203.authservice.mapper.UserMapper;
 import me.radek203.authservice.security.JWTAuthentication;
 import me.radek203.authservice.service.AuthService;
@@ -36,7 +37,14 @@ public class AuthController {
 
     @PostMapping("/validate")
     public ResponseEntity<UserDTO> validateToken(@Valid @RequestBody final JWTAuthentication authentication) {
-        return ResponseEntity.ok(authService.validateToken(authentication));
+        final UserDTO user = UserMapper.mapUserToUserDTO(authService.validateToken(authentication));
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody final UserUpdateDTO user, @PathVariable final int userId) {
+        final UserDTO savedUser = UserMapper.mapUserToUserDTO(authService.updateUser(userId, user));
+        return ResponseEntity.ok(savedUser);
     }
 
 }

@@ -1,0 +1,15 @@
+<span class="heading">Order New Card</span>
+<form [formGroup]="orderForm" (ngSubmit)="orderCard()">
+    <label for="account">Select account:</label>
+    <select id="account" formControlName="account">
+        <option [ngValue]="null" disabled selected>-- Select account --</option>
+        <option *ngFor="let account of accountService.accounts" [ngValue]="account.accountNumber">
+            {{ account.accountNumber | formatAccountNumber }}
+        </option>
+    </select>
+    <div class="error" *ngIf="orderForm.get('account')?.invalid && orderForm.get('account')?.touched">
+        Please select an account.
+    </div>
+
+    <button type="submit">Order New Card</button>
+</form>

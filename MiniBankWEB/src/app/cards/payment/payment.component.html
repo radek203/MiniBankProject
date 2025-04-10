@@ -1,0 +1,59 @@
+<form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+
+    <label for="cardNumber">Card Number:</label>
+    <input
+        id="cardNumber"
+        formControlName="cardNumber"
+        placeholder="1234 4567 9012 3456"
+        (input)="formatCardNumber()"
+    />
+    <div class="error" *ngIf="paymentForm.get('cardNumber')?.invalid && paymentForm.get('cardNumber')?.touched">
+        Enter a valid card number (16 digits).
+    </div>
+
+    <label for="expirationDate">Expiration Date (MM/YY):</label>
+    <input
+        id="expirationDate"
+        formControlName="expirationDate"
+        placeholder="MM/YY"
+        maxlength="5"
+    />
+    <div class="error" *ngIf="paymentForm.get('expirationDate')?.invalid && paymentForm.get('expirationDate')?.touched">
+        Enter a valid expiration date in MM/YY format.
+    </div>
+
+    <label for="cvv">CVV:</label>
+    <input
+        id="cvv"
+        formControlName="cvv"
+        placeholder="123"
+        maxlength="3"
+    />
+    <div class="error" *ngIf="paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched">
+        CVV must be 3 digits.
+    </div>
+
+    <label for="uuid">Service UUID:</label>
+    <input
+        id="uuid"
+        formControlName="uuid"
+        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    />
+    <div class="error" *ngIf="paymentForm.get('uuid')?.invalid && paymentForm.get('uuid')?.touched">
+        Enter a valid UUID.
+    </div>
+
+    <label for="amount">Amount:</label>
+    <input
+        id="amount"
+        formControlName="amount"
+        type="number"
+        step="0.01"
+        placeholder="100.00"
+    />
+    <div class="error" *ngIf="paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched">
+        Enter a valid amount greater than 0.
+    </div>
+
+    <button type="submit" class="btn btn-success">Pay</button>
+</form>

@@ -8,11 +8,20 @@ import {getBranchUrl} from '../app.utils';
 @Injectable({providedIn: 'root'})
 export class CardsService {
 
+    public cards: CreditCard[] = [];
+
     constructor(private httpService: HttpClient, private router: Router) {
     }
 
-    getCards(id: number) {
-        return this.httpService.get<CreditCard[]>('creditcard/' + id);
+    loadCards(id: number) {
+        this.httpService.get<CreditCard[]>('creditcard/' + id).subscribe({
+            next: (response) => {
+                this.cards = response;
+            },
+            error: (error) => {
+                console.error('Error fetching cards:', error);
+            }
+        });
     }
 
     createCard(client: Client) {
