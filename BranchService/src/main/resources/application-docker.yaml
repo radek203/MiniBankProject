@@ -1,0 +1,10 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka/
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://ms-sql-branch-${branch.id}:1433;databaseName=my_database;encrypt=false
+  kafka:
+    bootstrap-servers: kafka:29092

@@ -74,12 +74,135 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
     networks:
       - sb-network
+  service-registry:
+    build: ./ServiceRegistry
+    container_name: service-registry
+    ports:
+      - "8761:8761"
+    depends_on:
+      - kafka
+    healthcheck:
+      test: curl --fail http://localhost:8761/actuator/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sb-network
+  headquarter-service:
+    build: ./HeadquarterService
+    container_name: headquarter-service
+    depends_on:
+      - service-registry
+    ports:
+      - "8081:8081"
+    networks:
+      - sb-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: "curl --fail http://service-registry:8761/actuator/health || exit 1"
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+  branch-service-1:
+    build: ./BranchService
+    container_name: branch-service-1
+    depends_on:
+      - service-registry
+    ports:
+      - "8082:8082"
+    networks:
+      - sb-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - BRANCH_ID=1
+      - SERVER_PORT=8082
+    healthcheck:
+      test: "curl --fail http://service-registry:8761/actuator/health || exit 1"
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+  branch-service-2:
+    build: ./BranchService
+    container_name: branch-service-2
+    depends_on:
+      - service-registry
+    ports:
+      - "8083:8083"
+    networks:
+      - sb-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - BRANCH_ID=2
+      - SERVER_PORT=8083
+    healthcheck:
+      test: "curl --fail http://service-registry:8761/actuator/health || exit 1"
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+  credit-card-service:
+    build: ./CreditCardService
+    container_name: credit-card-service
+    depends_on:
+      - service-registry
+    ports:
+      - "8079:8079"
+    networks:
+      - sb-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: "curl --fail http://service-registry:8761/actuator/health || exit 1"
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+  auth-service:
+    build: ./AuthService
+    container_name: auth-service
+    depends_on:
+      - service-registry
+    ports:
+      - "8070:8070"
+    networks:
+      - sb-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: "curl --fail http://service-registry:8761/actuator/health || exit 1"
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+  api-gateway:
+    build: ./ApiGateway
+    container_name: api-gateway
+    depends_on:
+      - service-registry
+    ports:
+      - "8060:8060"
+    networks:
+      - sb-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: "curl --fail http://service-registry:8761/actuator/health || exit 1"
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
 
 networks:
   sb-network:
