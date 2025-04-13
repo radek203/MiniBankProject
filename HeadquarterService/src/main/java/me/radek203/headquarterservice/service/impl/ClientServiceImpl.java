@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    private KafkaSenderService kafkaSenderService;
+    private final KafkaSenderService kafkaSenderService;
 
     @Override
     public void createClient(Client client) {

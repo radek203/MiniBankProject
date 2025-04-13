@@ -1,7 +1,6 @@
 package me.radek203.branchservice.controller;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import me.radek203.branchservice.entity.BalanceChange;
 import me.radek203.branchservice.entity.Transfer;
 import me.radek203.branchservice.service.PaymentService;
@@ -18,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/transfer")
 public class PaymentController {
 
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
     @GetMapping("/{from}/{to}/{amount}")
     public ResponseEntity<Transfer> makeTransfer(@PathVariable String from, @PathVariable String to, @PathVariable double amount) {

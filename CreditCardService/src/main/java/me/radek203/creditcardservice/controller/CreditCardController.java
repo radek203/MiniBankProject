@@ -16,20 +16,18 @@ import java.util.UUID;
 @RequestMapping("/creditcard")
 public class CreditCardController {
 
-    private CreditCardService creditCardService;
+    private final CreditCardService creditCardService;
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<CreditCard>> getCreditCards(@PathVariable int userId) {
         return ResponseEntity.ok(creditCardService.getCreditCards(userId));
     }
 
-    //This endpoint should be secured
     @PostMapping("/create")
     public ResponseEntity<Bank> createBank(@RequestBody Bank bank) {
         return ResponseEntity.ok(creditCardService.createBank(bank));
     }
 
-    //All endpoints should be secured to prevent unauthorized access
     @PostMapping("/create/{bank}/{account}")
     public ResponseEntity<CreditCard> createCreditCard(@PathVariable int bank, @PathVariable String account) {
         return ResponseEntity.ok(creditCardService.createCreditCard(bank, account));

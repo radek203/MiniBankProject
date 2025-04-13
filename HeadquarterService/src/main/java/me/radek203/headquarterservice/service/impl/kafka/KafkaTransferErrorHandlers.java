@@ -10,12 +10,12 @@ import me.radek203.headquarterservice.service.KafkaTopicErrorHandler;
 
 public class KafkaTransferErrorHandlers {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static KafkaTopicErrorHandler getKafkaTransferCreateHandler(KafkaSenderService sender) {
         return (key, value) -> {
             try {
-                Transfer transfer = MAPPER.readValue(value, Transfer.class);
+                Transfer transfer = OBJECT_MAPPER.readValue(value, Transfer.class);
                 transfer.setStatus(TransferStatus.FAILED);
                 sender.sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
                 sender.sendMessage("branch-" + transfer.getToBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
@@ -29,7 +29,7 @@ public class KafkaTransferErrorHandlers {
     public static KafkaTopicErrorHandler getKafkaTransferErrorHandler(KafkaSenderService sender) {
         return (key, value) -> {
             try {
-                BalanceChange balanceChange = MAPPER.readValue(value, BalanceChange.class);
+                BalanceChange balanceChange = OBJECT_MAPPER.readValue(value, BalanceChange.class);
                 sender.sendMessage("branch-" + balanceChange.getBranchId() + "-balance-change-failed", String.valueOf(balanceChange.getId()), balanceChange);
                 return true;
             } catch (JsonProcessingException ignored) {

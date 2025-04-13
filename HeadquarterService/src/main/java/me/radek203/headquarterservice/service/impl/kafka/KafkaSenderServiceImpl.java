@@ -16,8 +16,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class KafkaSenderServiceImpl implements KafkaSenderService {
 
-    private ObjectMapper mapper = new ObjectMapper();
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final KafkaTemplate<String, String> kafkaTemplate;
     private final Map<String, KafkaTopicErrorHandler> handlers = new HashMap<>();
 
     @PostConstruct
@@ -32,7 +32,7 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
     public void sendMessage(String topic, String key, Object payload) {
         String message;
         try {
-            message = mapper.writeValueAsString(payload);
+            message = objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
             handleKafkaError(topic, key, payload.toString(), e.getMessage(), Direction.OUT);
             return;
@@ -51,7 +51,7 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
                 return;
             }
         }
-        System.out.println("Dead letter saved: Topic: " + topic + ", Key: " + key + ", Value: " + value + " , Error: " + error + ", Direction: " + direction);
+        System.out.println("Error on Kafka topic: " + topic + ", Key: " + key + ", Value: " + value + " , Error: " + error + ", Direction: " + direction);
     }
 
     private KafkaTopicErrorHandler getHandler(String topic) {

@@ -8,12 +8,12 @@ import me.radek203.headquarterservice.service.KafkaTopicErrorHandler;
 
 public class KafkaClientErrorHandlers {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static KafkaTopicErrorHandler getKafkaClientCreateHandler(KafkaSenderService sender) {
         return (key, value) -> {
             try {
-                Client client = MAPPER.readValue(value, Client.class);
+                Client client = OBJECT_MAPPER.readValue(value, Client.class);
                 sender.sendMessage("branch-" + client.getBranch() + "-client-create-error", String.valueOf(client.getId()), client);
                 return true;
             } catch (JsonProcessingException ignored) {

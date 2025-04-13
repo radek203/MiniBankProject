@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaListeners {
 
-    private ClientRepository clientRepository;
-    private PaymentService paymentService;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ClientRepository clientRepository;
+    private final PaymentService paymentService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = "branch-${branch.id}-client-create-error", groupId = "branch_group")
     void listenerClientError(String data) throws JsonProcessingException {

@@ -14,7 +14,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class WebClientConfig {
 
     @Bean
-    @LoadBalanced //Jak localhost to tego nie dajemy
+    @LoadBalanced
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder();
     }
@@ -22,7 +22,6 @@ public class WebClientConfig {
     @Bean
     public WebClient authWebClient() {
         return webClientBuilder().baseUrl("http://auth-service").build();
-        //return webClientBuilder().baseUrl("http://localhost:8081").build();
     }
 
     @Bean

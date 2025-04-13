@@ -9,12 +9,12 @@ import me.radek203.branchservice.service.KafkaTopicErrorHandler;
 
 public class KafkaTransferErrorHandlers {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static KafkaTopicErrorHandler getKafkaTransferErrorHandler(KafkaSenderService sender) {
         return (key, value) -> {
             try {
-                Transfer transfer = MAPPER.readValue(value, Transfer.class);
+                Transfer transfer = OBJECT_MAPPER.readValue(value, Transfer.class);
                 transfer.setStatus(TransferStatus.FAILED);
                 sender.sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
                 return true;

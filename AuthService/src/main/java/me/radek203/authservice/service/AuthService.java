@@ -10,9 +10,13 @@ import me.radek203.authservice.security.JWTAuthentication;
 public interface AuthService {
 
     User createUser(UserDTO user);
+
     JWTAuthentication authenticateUser(LoginDTO user);
+
     JWTAuthentication authenticateUser(JWTAuthentication authentication);
+
     User validateToken(JWTAuthentication authentication);
+
     User updateUser(int userId, UserUpdateDTO user);
 
 }

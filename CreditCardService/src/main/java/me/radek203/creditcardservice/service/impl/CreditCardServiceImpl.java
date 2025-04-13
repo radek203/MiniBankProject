@@ -10,7 +10,9 @@ import me.radek203.creditcardservice.exception.ResourceNotFoundException;
 import me.radek203.creditcardservice.repository.BankRepository;
 import me.radek203.creditcardservice.repository.CreditCardRepository;
 import me.radek203.creditcardservice.service.CreditCardService;
-import org.springframework.http.*;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,9 +27,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreditCardServiceImpl implements CreditCardService {
 
-    private HeadquarterClient headquarterClient;
-    private BankRepository bankRepository;
-    private CreditCardRepository creditCardRepository;
+    private final HeadquarterClient headquarterClient;
+    private final BankRepository bankRepository;
+    private final CreditCardRepository creditCardRepository;
 
     private String generateRandomString(int length) {
         SecureRandom random = new SecureRandom();

@@ -27,6 +27,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private final JWTTokenUtils jwtService;
     private final UserService userService;
 
+    private static String getTokenFromRequest(final HttpServletRequest request) {
+        final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+
+        return null;
+    }
+
     @Override
     protected final void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -50,15 +60,5 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private static String getTokenFromRequest(final HttpServletRequest request) {
-        final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
     }
 }

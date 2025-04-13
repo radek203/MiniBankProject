@@ -2,9 +2,7 @@ package me.radek203.branchservice.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ResourceInvalidException extends RuntimeException {
 
     static final String ERROR_CODE = "RESOURCE_INVALID";

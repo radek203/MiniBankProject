@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/account")
 public class ClientController {
 
-    private ClientService clientService;
-    private CreditCardClient creditCardClient;
-    private AppProperties appProperties;
+    private final ClientService clientService;
+    private final CreditCardClient creditCardClient;
+    private final AppProperties appProperties;
 
     @PostMapping("/create")
     public ResponseEntity<Client> create(@Validated @RequestBody Client client, @RequestHeader("X-UserId") int userId) {

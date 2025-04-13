@@ -2,9 +2,7 @@ package me.radek203.headquarterservice.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.CONFLICT)
 public class ResourceAlreadyExistsException extends RuntimeException {
 
     static final String ERROR_CODE = "RESOURCE_ALREADY_EXISTS";
