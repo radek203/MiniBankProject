@@ -7,20 +7,21 @@ import {TokenResponse} from '../models/token.model';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+    selector: 'app-login',
     imports: [
         ReactiveFormsModule,
         NgIf
     ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
 
     loginForm!: FormGroup;
     submitted = false;
 
-    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
+    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+    }
 
     ngOnInit(): void {
         this.loginForm = this.fb.group({

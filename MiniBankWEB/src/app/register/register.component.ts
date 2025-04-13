@@ -5,20 +5,21 @@ import {AuthService} from '../services/auth.service';
 import {User} from '../models/user.model';
 
 @Component({
-  selector: 'app-register',
+    selector: 'app-register',
     imports: [
         ReactiveFormsModule,
         NgIf
     ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.scss'
 })
 export class RegisterComponent implements OnInit {
 
     registrationForm!: FormGroup;
     submitted = false;
 
-    constructor(private fb: FormBuilder, private authService: AuthService) {}
+    constructor(private fb: FormBuilder, private authService: AuthService) {
+    }
 
     ngOnInit(): void {
         this.registrationForm = this.fb.group({

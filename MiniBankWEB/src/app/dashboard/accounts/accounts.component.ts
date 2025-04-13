@@ -6,13 +6,13 @@ import {FormatAccountNumberPipe} from '../../format-account-number.pipe';
 import {CurrencyPipe} from '@angular/common';
 
 @Component({
-  selector: 'app-accounts',
+    selector: 'app-accounts',
     imports: [
         FormatAccountNumberPipe,
         CurrencyPipe
     ],
-  templateUrl: './accounts.component.html',
-  styleUrl: './accounts.component.scss'
+    templateUrl: './accounts.component.html',
+    styleUrl: './accounts.component.scss'
 })
 export class AccountsComponent implements OnInit {
 

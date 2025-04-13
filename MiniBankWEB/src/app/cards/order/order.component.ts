@@ -6,7 +6,7 @@ import {CardsService} from '../../services/cards.service';
 import {AccountService} from '../../services/account.service';
 
 @Component({
-  selector: 'app-order',
+    selector: 'app-order',
     imports: [
         FormatAccountNumberPipe,
         FormsModule,
@@ -14,8 +14,8 @@ import {AccountService} from '../../services/account.service';
         NgIf,
         ReactiveFormsModule
     ],
-  templateUrl: './order.component.html',
-  styleUrl: './order.component.scss'
+    templateUrl: './order.component.html',
+    styleUrl: './order.component.scss'
 })
 export class OrderComponent implements OnInit {
 

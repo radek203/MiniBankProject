@@ -11,7 +11,8 @@
                     <p><strong>Owner: </strong> {{ account.firstName }} {{ account.lastName }}</p>
                 </div>
                 <div class="account-branch">
-                    <img [src]="'img/' + getBranchShortName(account.branch) + '.png'" alt="Branch Logo" class="account-branch-logo">
+                    <img [src]="'img/' + getBranchShortName(account.branch) + '.png'" alt="Branch Logo"
+                         class="account-branch-logo">
                     <span class="account-branch-name">{{ getBranchName(account.branch) }}</span>
                     <span class="color-second"><i class="fa-solid fa-building"></i> BRANCH</span>
                 </div>

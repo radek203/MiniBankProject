@@ -5,13 +5,13 @@ import {AuthService} from './services/auth.service';
 import {Title} from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-root',
+    selector: 'app-root',
     imports: [RouterOutlet, RouterLink, RouterLinkActive],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  title = 'MiniBankWEB';
+    title = 'MiniBankWEB';
 
 
     constructor(protected authService: AuthService, private titleService: Title) {

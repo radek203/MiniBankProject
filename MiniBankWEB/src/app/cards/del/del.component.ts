@@ -6,7 +6,7 @@ import {CardsService} from '../../services/cards.service';
 import {AccountService} from '../../services/account.service';
 
 @Component({
-  selector: 'app-del',
+    selector: 'app-del',
     imports: [
         FormatCardNumberPipe,
         FormsModule,
@@ -14,8 +14,8 @@ import {AccountService} from '../../services/account.service';
         NgIf,
         ReactiveFormsModule
     ],
-  templateUrl: './del.component.html',
-  styleUrl: './del.component.scss'
+    templateUrl: './del.component.html',
+    styleUrl: './del.component.scss'
 })
 export class DelComponent implements OnInit {
 

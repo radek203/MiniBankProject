@@ -51,7 +51,7 @@ form {
 
 .card-front:after {
     content: "";
-    background: none, none, linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.25) 0.1%, rgba(255,255,255,0) 60%);
+    background: none, none, linear-gradient(125deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .25) 0.1%, rgba(255, 255, 255, 0) 60%);
     background-size: 200% 200%;
     mix-blend-mode: hard-light;
     animation: bg var(--duration) ease infinite;
@@ -77,7 +77,7 @@ form {
     text-transform: uppercase;
     font-size: clamp(0.75rem, 2.8vw + 0.2rem, 1.1rem);
     inset: 5%;
-    text-shadow: -1px -1px 0px rgba(255,255,255,0.5),1px -1px 0px rgba(255,255,255,0.5),1px 1px 0px rgba(0,0,0,0.5),1px -1px 0px rgba(0,0,0,0.5);
+    text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.5), 1px -1px 0px rgba(255, 255, 255, 0.5), 1px 1px 0px rgba(0, 0, 0, 0.5), 1px -1px 0px rgba(0, 0, 0, 0.5);
     z-index: 5;
 }
 
@@ -158,13 +158,21 @@ form {
 }
 
 @keyframes tilt {
-    0%, 100% { transform: translate3d(0, 0, 0.01px) rotateY(-20deg) rotateX(5deg); }
-    50% { transform: translate3d(0, 0, 0.01px) rotateY(20deg) rotateX(5deg); }
+    0%, 100% {
+        transform: translate3d(0, 0, 0.01px) rotateY(-20deg) rotateX(5deg);
+    }
+    50% {
+        transform: translate3d(0, 0, 0.01px) rotateY(20deg) rotateX(5deg);
+    }
 }
 
 @keyframes bg {
-    0%, 100% { background-position: 50% 50%, calc(50% + 1px) calc(50% + 1px), 0 50%; }
-    50% { background-position: 50% 50%, calc(50% - 1px) calc(50% - 1px), 100% 50%; }
+    0%, 100% {
+        background-position: 50% 50%, calc(50% + 1px) calc(50% + 1px), 0 50%;
+    }
+    50% {
+        background-position: 50% 50%, calc(50% - 1px) calc(50% - 1px), 100% 50%;
+    }
 }
 
 

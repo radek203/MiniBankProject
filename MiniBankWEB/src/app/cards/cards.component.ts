@@ -4,13 +4,13 @@ import {AuthService} from '../services/auth.service';
 import {FormatCardNumberPipe} from '../format-card-number.pipe';
 import {AccountService} from '../services/account.service';
 import {FormatAccountNumberPipe} from '../format-account-number.pipe';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 import {OrderComponent} from './order/order.component';
 import {DelComponent} from './del/del.component';
 import {PaymentComponent} from './payment/payment.component';
 
 @Component({
-  selector: 'app-cards',
+    selector: 'app-cards',
     imports: [
         FormatCardNumberPipe,
         FormatAccountNumberPipe,
@@ -19,8 +19,8 @@ import {PaymentComponent} from './payment/payment.component';
         DelComponent,
         PaymentComponent
     ],
-  templateUrl: './cards.component.html',
-  styleUrl: './cards.component.scss',
+    templateUrl: './cards.component.html',
+    styleUrl: './cards.component.scss',
     encapsulation: ViewEncapsulation.None
 })
 export class CardsComponent implements OnInit {

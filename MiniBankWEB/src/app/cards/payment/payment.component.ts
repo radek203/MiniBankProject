@@ -5,14 +5,14 @@ import {CardsService} from '../../services/cards.service';
 import {AccountService} from '../../services/account.service';
 
 @Component({
-  selector: 'app-payment',
+    selector: 'app-payment',
     imports: [
         FormsModule,
         NgIf,
         ReactiveFormsModule
     ],
-  templateUrl: './payment.component.html',
-  styleUrl: './payment.component.scss'
+    templateUrl: './payment.component.html',
+    styleUrl: './payment.component.scss'
 })
 export class PaymentComponent implements OnInit {
 
@@ -36,7 +36,7 @@ export class PaymentComponent implements OnInit {
         const digitsOnly = rawValue.replace(/\D/g, '').substring(0, 16);
         const formatted = digitsOnly.replace(/(.{4})/g, '$1 ').trim();
 
-        this.paymentForm.get('cardNumber')?.setValue(formatted, { emitEvent: false });
+        this.paymentForm.get('cardNumber')?.setValue(formatted, {emitEvent: false});
     }
 
     submitPayment(): void {

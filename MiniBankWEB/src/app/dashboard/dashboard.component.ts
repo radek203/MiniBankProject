@@ -1,22 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AccountsComponent} from './accounts/accounts.component';
 import {TransferComponent} from './transfer/transfer.component';
-import {Client} from '../models/client.model';
 import {AuthService} from '../services/auth.service';
-import {AccountService} from '../services/account.service';
 import {DepositComponent} from './deposit/deposit.component';
 import {WithdrawComponent} from './withdraw/withdraw.component';
 
 @Component({
-  selector: 'app-dashboard',
+    selector: 'app-dashboard',
     imports: [
         AccountsComponent,
         TransferComponent,
         DepositComponent,
         WithdrawComponent
     ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
 
