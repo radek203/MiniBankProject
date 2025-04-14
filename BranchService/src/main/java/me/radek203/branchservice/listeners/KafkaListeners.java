@@ -1,4 +1,4 @@
-package me.radek203.branchservice;
+package me.radek203.branchservice.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

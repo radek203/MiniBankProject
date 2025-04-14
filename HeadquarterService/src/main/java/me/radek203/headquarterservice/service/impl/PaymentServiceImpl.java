@@ -34,7 +34,9 @@ public class PaymentServiceImpl implements PaymentService {
         makeTransaction(fromClient.get(), toClient.get(), transfer);
 
         kafkaSenderService.sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-completed", String.valueOf(transfer.getId()), transfer);
-        kafkaSenderService.sendMessage("branch-" + transfer.getToBranchId() + "-transfer-completed", String.valueOf(transfer.getId()), transfer);
+        if (transfer.getFromBranchId() != transfer.getToBranchId()) {
+            kafkaSenderService.sendMessage("branch-" + transfer.getToBranchId() + "-transfer-completed", String.valueOf(transfer.getId()), transfer);
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class PaymentController {
 
     @GetMapping("/{from}/{to}/{amount}")
     public ResponseEntity<Transfer> makeTransfer(@PathVariable String from, @PathVariable String to, @PathVariable double amount) {
-        return ResponseEntity.ok(paymentService.makeTransfer(from, to, "", amount));
+        return ResponseEntity.ok(paymentService.makeTransfer(from, to, amount));
     }
 
     @GetMapping("/transfer/{id}")
@@ -29,14 +30,24 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getTransfer(id));
     }
 
+    @GetMapping("/transfer/all/{account}")
+    public ResponseEntity<List<Transfer>> getTransfersByAccount(@PathVariable String account) {
+        return ResponseEntity.ok(paymentService.getTransfersByAccount(account));
+    }
+
     @GetMapping("/payment/{from}/{to}/{amount}")
     public ResponseEntity<Transfer> makePaymentTransfer(@PathVariable String from, @PathVariable UUID to, @PathVariable double amount) {
-        return ResponseEntity.ok(paymentService.makePaymentTransfer(from, to, "", amount));
+        return ResponseEntity.ok(paymentService.makePaymentTransfer(from, to, amount));
     }
 
     @GetMapping("/balance/{id}")
     public ResponseEntity<BalanceChange> getBalance(@PathVariable UUID id) {
         return ResponseEntity.ok(paymentService.getBalanceChange(id));
+    }
+
+    @GetMapping("/balance/all/{account}")
+    public ResponseEntity<List<BalanceChange>> getBalanceChangesByAccount(@PathVariable String account) {
+        return ResponseEntity.ok(paymentService.getBalanceChanges(account));
     }
 
     @GetMapping("/deposit/{account}/{amount}")

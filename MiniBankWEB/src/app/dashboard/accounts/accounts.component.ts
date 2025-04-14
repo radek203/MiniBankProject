@@ -3,13 +3,17 @@ import {AccountService} from '../../services/account.service';
 import {AuthService} from '../../services/auth.service';
 import {getBranchName, getBranchShortName} from '../../app.utils';
 import {FormatAccountNumberPipe} from '../../format-account-number.pipe';
-import {CurrencyPipe} from '@angular/common';
+import {CurrencyPipe, DatePipe} from '@angular/common';
+import {TransfersComponent} from './transfers/transfers.component';
+import {BalancechangesComponent} from './balancechanges/balancechanges.component';
 
 @Component({
     selector: 'app-accounts',
     imports: [
         FormatAccountNumberPipe,
-        CurrencyPipe
+        CurrencyPipe,
+        TransfersComponent,
+        BalancechangesComponent
     ],
     templateUrl: './accounts.component.html',
     styleUrl: './accounts.component.scss'

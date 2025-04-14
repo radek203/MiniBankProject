@@ -43,6 +43,7 @@ export class DepositComponent {
                             next: (response) => {
                                 if (response.status === BalanceChangeStatus.COMPLETED) {
                                     this.accountService.loadAccounts(this.authService.user.id);
+                                    this.notificationService.clearNotifications();
                                 }
                             },
                             error: (error) => {

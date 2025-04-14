@@ -9,7 +9,6 @@ export interface Transfer {
     fromAccount: string;
     toAccount: string;
     amount: number;
-    message: string;
     status: TransferStatus;
     fromBranchId: number;
     toBranchId: number;

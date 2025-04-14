@@ -55,6 +55,7 @@ export class TransferComponent implements OnInit {
                             next: (response) => {
                                 if (response.status === TransferStatus.COMPLETED) {
                                     this.accountService.loadAccounts(this.authService.user.id);
+                                    this.notificationService.clearNotifications();
                                 }
                             },
                             error: (error) => {

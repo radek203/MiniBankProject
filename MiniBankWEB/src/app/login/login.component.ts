@@ -52,6 +52,7 @@ export class LoginComponent implements OnInit {
         this.authService.getUserByToken(token).subscribe({
             next: (res: User) => {
                 this.authService.setUser(res);
+                this.notificationService.clearNotifications();
             },
             error: (error) => {
                 this.notificationService.addNotification(error);

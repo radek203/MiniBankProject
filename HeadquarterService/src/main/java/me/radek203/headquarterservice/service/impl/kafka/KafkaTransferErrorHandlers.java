@@ -18,7 +18,9 @@ public class KafkaTransferErrorHandlers {
                 Transfer transfer = OBJECT_MAPPER.readValue(value, Transfer.class);
                 transfer.setStatus(TransferStatus.FAILED);
                 sender.sendMessage("branch-" + transfer.getFromBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
-                sender.sendMessage("branch-" + transfer.getToBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
+                if (transfer.getFromBranchId() != transfer.getToBranchId()) {
+                    sender.sendMessage("branch-" + transfer.getToBranchId() + "-transfer-failed", String.valueOf(transfer.getId()), transfer);
+                }
                 return true;
             } catch (JsonProcessingException ignored) {
             }

@@ -16,8 +16,9 @@
                     <span class="account-branch-name">{{ getBranchName(account.branch) }}</span>
                     <span class="color-second"><i class="fa-solid fa-building"></i> BRANCH</span>
                 </div>
+                <app-transfers [accountNumber]="account.accountNumber" class="transfers"></app-transfers>
+                <app-balancechanges [accountNumber]="account.accountNumber" class="transfers"></app-balancechanges>
             </div>
         </div>
     }
-
 </div>

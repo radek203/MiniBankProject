@@ -59,3 +59,10 @@
         }
     }
 }
+
+.transfers {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    display: flex;
+    flex-direction: column;
+}

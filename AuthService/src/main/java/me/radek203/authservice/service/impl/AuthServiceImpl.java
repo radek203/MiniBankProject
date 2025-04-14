@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public final User createUser(final UserDTO user) {
         userRepository.findByUsername(user.getUsername()).ifPresent(u -> {
-            throw new ResourceAlreadyExistsException("user/existed-username", user.getUsername());
+            throw new ResourceAlreadyExistsException("error/user-already-existed", user.getUsername());
         });
 
         final User finalUser = UserMapper.mapUserDTOToUser(user);
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
     public final JWTAuthentication authenticateUser(final LoginDTO user) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
-        final User finalUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new ResourceNotFoundException("user/not-found", user.getUsername()));
+        final User finalUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new ResourceNotFoundException("error/user-not-found", user.getUsername()));
         final String token = jwtService.generateToken(finalUser.getUsername());
 
         return new JWTAuthentication(token);
@@ -57,10 +57,10 @@ public class AuthServiceImpl implements AuthService {
     public final JWTAuthentication authenticateUser(final JWTAuthentication authentication) {
         final String username = jwtService.getUsername(authentication.getToken());
         if (!jwtService.isTokenValid(authentication.getToken(), username)) {
-            throw new ResourceInvalidException("token/invalid", authentication.getToken());
+            throw new ResourceInvalidException("error/token-invalid", authentication.getToken());
         }
 
-        final User finalUser = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("user/not-found", username));
+        final User finalUser = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("error/user-not-found", username));
         final String token = jwtService.generateToken(finalUser.getUsername());
 
         return new JWTAuthentication(token);
@@ -70,20 +70,20 @@ public class AuthServiceImpl implements AuthService {
     public User validateToken(final JWTAuthentication authentication) {
         final String username = jwtService.getUsername(authentication.getToken());
         if (!jwtService.isTokenValid(authentication.getToken(), username)) {
-            throw new ResourceInvalidException("token/invalid", authentication.getToken());
+            throw new ResourceInvalidException("error/token-invalid", authentication.getToken());
         }
 
-        return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("user/not-found", username));
+        return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("error/user-not-found", username));
     }
 
     @Override
     public User updateUser(int userId, UserUpdateDTO user) {
-        final User finalUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user/not-found", userId));
+        final User finalUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("error/user-not-found", userId));
 
         try {
             authenticateUser(new LoginDTO(finalUser.getUsername(), user.getOldPassword()));
         } catch (Exception e) {
-            throw new ResourceInvalidException("user/invalid-password", user.getOldPassword());
+            throw new ResourceInvalidException("error/invalid-password", user.getOldPassword());
         }
 
         finalUser.setUsername(user.getUsername());

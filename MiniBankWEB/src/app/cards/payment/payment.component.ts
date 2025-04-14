@@ -45,6 +45,7 @@ export class PaymentComponent implements OnInit {
             this.cardsService.payByCard(this.paymentForm.value['cardNumber'].replaceAll(" ", ""), this.paymentForm.value['expirationDate'].replace("/", ""), this.paymentForm.value['cvv'], this.paymentForm.value['uuid'], this.paymentForm.value['amount']).subscribe({
                 next: (response) => {
                     this.paymentForm.reset();
+                    this.notificationService.clearNotifications();
                 },
                 error: (error) => {
                     this.notificationService.addNotification(error);

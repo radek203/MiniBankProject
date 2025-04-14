@@ -9,4 +9,5 @@ export interface BalanceChange {
     amount: number;
     status: BalanceChangeStatus;
     branchId: number;
+    date: number;
 }

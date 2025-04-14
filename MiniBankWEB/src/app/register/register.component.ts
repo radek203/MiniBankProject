@@ -44,7 +44,7 @@ export class RegisterComponent implements OnInit {
         if (this.registrationForm.valid) {
             this.authService.postRegistration(this.registrationForm.value).subscribe({
                 next: (response: User) => {
-
+                    this.notificationService.clearNotifications();
                 },
                 error: (error) => {
                     this.notificationService.addNotification(error);

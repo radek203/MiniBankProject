@@ -29,6 +29,7 @@ export class CardsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.accountService.loadAccounts(this.authService.user.id);
         this.cardsService.loadCards(this.authService.user.id);
     }
 

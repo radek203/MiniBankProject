@@ -20,5 +20,6 @@ public class BalanceChange {
     private double amount;
     private BalanceChangeStatus status;
     private int branchId;
+    private long date;
 
 }

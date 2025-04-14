@@ -28,7 +28,6 @@ export class SettingsComponent {
         });
     }
 
-    // Submit form
     submitForm(): void {
         if (this.userForm.valid) {
             this.authService.updateUser(this.authService.user.id, {
@@ -37,13 +36,14 @@ export class SettingsComponent {
             }).subscribe({
                 next: (response) => {
                     this.authService.logout();
+                    this.notificationService.clearNotifications();
                 },
                 error: (error) => {
                     this.notificationService.addNotification(error);
                 }
             });
         } else {
-            this.userForm.markAllAsTouched(); // To show errors
+            this.userForm.markAllAsTouched();
         }
     }
 }

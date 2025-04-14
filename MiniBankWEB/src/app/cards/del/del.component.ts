@@ -37,6 +37,7 @@ export class DelComponent implements OnInit {
                 next: () => {
                     this.cardsService.cards = this.cardsService.cards.filter(c => c.cardNumber !== this.deleteForm.value['card']);
                     this.deleteForm.reset();
+                    this.notificationService.clearNotifications();
                 },
                 error: (error) => {
                     this.notificationService.addNotification(error);

@@ -85,6 +85,14 @@ button {
             background-color: #4ea652;
         }
     }
+
+    &.orange {
+        background-color: #d68b2a;
+
+        &:hover {
+            background-color: #e09f3e;
+        }
+    }
 }
 
 input, select {

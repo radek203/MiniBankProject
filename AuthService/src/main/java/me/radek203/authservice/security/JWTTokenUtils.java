@@ -52,7 +52,7 @@ public class JWTTokenUtils {
         try {
             return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
         } catch (final ExpiredJwtException | SignatureException e) {
-            throw new ResourceInvalidException("token/expired", token);
+            throw new ResourceInvalidException("error/token-invalid", token);
         }
     }
 

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,7 +38,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public Transfer makeTransfer(String fromAccount, String toAccount, String message, double amount) {
+    public Transfer makeTransfer(String fromAccount, String toAccount, double amount) {
         if (amount <= 0) {
             throw new ResourceInvalidException("error/invalid-amount");
         }
@@ -60,22 +61,38 @@ public class PaymentServiceImpl implements PaymentService {
         fromClient.setBalanceReserved(fromClient.getBalanceReserved() + amount);
         clientRepository.save(fromClient);
 
-        Transfer transfer = new Transfer(null, fromAccount, toAccount, amount, message, TransferStatus.STARTED, appProperties.getBranchId(), branchId.getBody(), System.currentTimeMillis());
+        if (appProperties.getBranchId() == branchId.getBody()) {
+            Client toClient = clientRepository.findByAccountNumber(toAccount).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
+            toClient.setBalanceReserved(toClient.getBalanceReserved() - amount);
+            clientRepository.save(toClient);
+        }
+
+        Transfer transfer = new Transfer(null, fromAccount, toAccount, amount, TransferStatus.STARTED, appProperties.getBranchId(), branchId.getBody(), System.currentTimeMillis());
         transfer.setId(UUID.randomUUID());
         Transfer transferSaved = transferRepository.save(transfer);
-        kafkaSenderService.sendMessage("branch-" + branchId.getBody() + "-transfer-create", String.valueOf(transferSaved.getId()), transferSaved);
+
+        if (appProperties.getBranchId() == branchId.getBody()) {
+            kafkaSenderService.sendMessage("headquarter-transfer-create", String.valueOf(transfer.getId()), transfer);
+        } else {
+            kafkaSenderService.sendMessage("branch-" + branchId.getBody() + "-transfer-create", String.valueOf(transfer.getId()), transfer);
+        }
 
         return transferSaved;
     }
 
     @Override
     @Transactional
-    public Transfer makePaymentTransfer(String fromAccount, UUID service, String message, double amount) {
+    public Transfer makePaymentTransfer(String fromAccount, UUID service, double amount) {
         ResponseEntity<String> toAccount = hqClient.getAccountNumber(service);
         if (toAccount.getStatusCode() != HttpStatus.OK || toAccount.getBody() == null) {
             throw new ResourceInvalidException("error/invalid-account");
         }
-        return makeTransfer(fromAccount, toAccount.getBody(), message, amount);
+        return makeTransfer(fromAccount, toAccount.getBody(), amount);
+    }
+
+    @Override
+    public List<Transfer> getTransfersByAccount(String account) {
+        return transferRepository.findAllByFromAccountOrToAccount(account, account);
     }
 
     @Transactional
@@ -108,24 +125,25 @@ public class PaymentServiceImpl implements PaymentService {
         }
         transferRepository.deleteById(transfer.getId());
 
-        Optional<Client> clientOptional;
         if (transfer.getFromBranchId() == appProperties.getBranchId()) {
-            clientOptional = clientRepository.findByAccountNumber(transfer.getFromAccount());
-        } else {
-            clientOptional = clientRepository.findByAccountNumber(transfer.getToAccount());
-        }
-        if (clientOptional.isEmpty()) {
-            return;
-        }
-        Client client = clientOptional.get();
-
-        if (transfer.getFromBranchId() == appProperties.getBranchId()) {
+            Optional<Client> clientOptional = clientRepository.findByAccountNumber(transfer.getFromAccount());
+            if (clientOptional.isEmpty()) {
+                return;
+            }
+            Client client = clientOptional.get();
             client.setBalance(client.getBalance() + transfer.getAmount());
             client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
-        } else {
-            client.setBalanceReserved(client.getBalanceReserved() + transfer.getAmount());
+            clientRepository.save(client);
         }
-        clientRepository.save(client);
+        if (transfer.getToBranchId() == appProperties.getBranchId()) {
+            Optional<Client> clientOptional = clientRepository.findByAccountNumber(transfer.getToAccount());
+            if (clientOptional.isEmpty()) {
+                return;
+            }
+            Client client = clientOptional.get();
+            client.setBalanceReserved(client.getBalanceReserved() + transfer.getAmount());
+            clientRepository.save(client);
+        }
     }
 
     @Override
@@ -137,24 +155,25 @@ public class PaymentServiceImpl implements PaymentService {
         }
         transferRepository.save(transfer);
 
-        Optional<Client> clientOptional;
         if (transfer.getFromBranchId() == appProperties.getBranchId()) {
-            clientOptional = clientRepository.findByAccountNumber(transfer.getFromAccount());
-        } else {
-            clientOptional = clientRepository.findByAccountNumber(transfer.getToAccount());
+            Optional<Client> clientOptional = clientRepository.findByAccountNumber(transfer.getFromAccount());
+            if (clientOptional.isEmpty()) {
+                return;
+            }
+            Client client = clientOptional.get();
+            client.setBalance(client.getBalance() - transfer.getAmount());
+            clientRepository.save(client);
         }
-        if (clientOptional.isEmpty()) {
-            return;
-        }
-        Client client = clientOptional.get();
-
-        if (transfer.getFromBranchId() == appProperties.getBranchId()) {
-            client.setBalanceReserved(client.getBalanceReserved() - transfer.getAmount());
-        } else {
+        if (transfer.getToBranchId() == appProperties.getBranchId()) {
+            Optional<Client> clientOptional = clientRepository.findByAccountNumber(transfer.getToAccount());
+            if (clientOptional.isEmpty()) {
+                return;
+            }
+            Client client = clientOptional.get();
             client.setBalance(client.getBalance() + transfer.getAmount());
             client.setBalanceReserved(client.getBalanceReserved() + transfer.getAmount());
+            clientRepository.save(client);
         }
-        clientRepository.save(client);
     }
 
     @Override
@@ -170,7 +189,7 @@ public class PaymentServiceImpl implements PaymentService {
         client.setBalanceReserved(client.getBalanceReserved() - amount);
         clientRepository.save(client);
 
-        BalanceChange balanceChange = new BalanceChange(UUID.randomUUID(), account, amount, BalanceChangeStatus.STARTED, appProperties.getBranchId());
+        BalanceChange balanceChange = new BalanceChange(UUID.randomUUID(), account, amount, BalanceChangeStatus.STARTED, appProperties.getBranchId(), System.currentTimeMillis());
         balanceChange = balanceChangeRepository.save(balanceChange);
 
         kafkaSenderService.sendMessage("headquarter-balance-deposit", String.valueOf(balanceChange.getId()), balanceChange);
@@ -191,12 +210,17 @@ public class PaymentServiceImpl implements PaymentService {
         client.setBalanceReserved(client.getBalanceReserved() + amount);
         clientRepository.save(client);
 
-        BalanceChange balanceChange = new BalanceChange(UUID.randomUUID(), account, -amount, BalanceChangeStatus.STARTED, appProperties.getBranchId());
+        BalanceChange balanceChange = new BalanceChange(UUID.randomUUID(), account, -amount, BalanceChangeStatus.STARTED, appProperties.getBranchId(), System.currentTimeMillis());
         balanceChange = balanceChangeRepository.save(balanceChange);
 
         kafkaSenderService.sendMessage("headquarter-balance-withdraw", String.valueOf(balanceChange.getId()), balanceChange);
 
         return balanceChange;
+    }
+
+    @Override
+    public List<BalanceChange> getBalanceChanges(String account) {
+        return balanceChangeRepository.getBalanceChangesByAccount(account);
     }
 
     @Override

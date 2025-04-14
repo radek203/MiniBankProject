@@ -34,5 +34,5 @@ export const pageConfig: Config = {
     name: "MiniBankProject",
     home: "http://localhost:4200/home",
     version: "1.0.0 Beta",
-    api: "http://localhost:8060/" //https://shop.thundercode.net/api/v1/
+    api: "http://localhost:8060/"
 }

@@ -1,0 +1,19 @@
+@if (this.accountService.showTransfers.indexOf(accountNumber) >= 0) {
+    <button class="orange w200" (click)="changeShowTransfers()">Hide transfers</button>
+    <span class="heading">Transfers</span>
+    @for (transfer of pagedTransfers; let i = $index; track i) {
+        <div class="transfer">
+            <span class="transfer-date">{{ transfer.date | date: 'dd/MM HH:mm' }}</span>
+            <span class="transfer-from">{{ (accountNumber == transfer.toAccount ? transfer.fromAccount : transfer.toAccount) | formatAccountNumber }}</span>
+            <span class="transfer-amount">{{ (accountNumber == transfer.toAccount ? transfer.amount : -transfer.amount) | currency }}</span>
+        </div>
+    }
+
+    <div class="pagination">
+        <button (click)="changePage(page - 1)" [disabled]="page === 1">Previous</button>
+        <span>Page {{ page }} of {{ totalTransfersPages() }}</span>
+        <button (click)="changePage(page + 1)" [disabled]="page === totalTransfersPages()">Next</button>
+    </div>
+} @else {
+    <button class="green w200" (click)="changeShowTransfers()">Show transfers</button>
+}

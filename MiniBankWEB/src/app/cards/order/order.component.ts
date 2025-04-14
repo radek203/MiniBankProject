@@ -39,6 +39,7 @@ export class OrderComponent implements OnInit {
                     next: (response) => {
                         this.cardsService.cards.push(response);
                         this.orderForm.reset();
+                        this.notificationService.clearNotifications();
                     },
                     error: (error) => {
                         this.notificationService.addNotification(error);
