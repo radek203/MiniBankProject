@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgForOf, NgIf} from "@angular/common";
 import {CardsService} from '../../services/cards.service';
 import {AccountService} from '../../services/account.service';
+import {NotificationService} from '../../services/notification.service';
 
 @Component({
     selector: 'app-del',
@@ -21,7 +22,7 @@ export class DelComponent implements OnInit {
 
     deleteForm!: FormGroup;
 
-    constructor(private fb: FormBuilder, protected cardsService: CardsService, protected accountService: AccountService) {
+    constructor(private fb: FormBuilder, protected cardsService: CardsService, protected accountService: AccountService, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -35,11 +36,10 @@ export class DelComponent implements OnInit {
             this.cardsService.deleteCard(this.deleteForm.value['card']).subscribe({
                 next: () => {
                     this.cardsService.cards = this.cardsService.cards.filter(c => c.cardNumber !== this.deleteForm.value['card']);
-                    this.deleteForm.get('card')?.setValue(null);
-                    console.log('Card deleted successfully');
+                    this.deleteForm.reset();
                 },
                 error: (error) => {
-                    console.error('Error deleting card:', error);
+                    this.notificationService.addNotification(error);
                 }
             });
         } else {

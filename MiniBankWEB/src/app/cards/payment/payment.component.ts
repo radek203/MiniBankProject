@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgIf} from "@angular/common";
 import {CardsService} from '../../services/cards.service';
 import {AccountService} from '../../services/account.service';
+import {NotificationService} from '../../services/notification.service';
 
 @Component({
     selector: 'app-payment',
@@ -18,7 +19,7 @@ export class PaymentComponent implements OnInit {
 
     paymentForm!: FormGroup;
 
-    constructor(private fb: FormBuilder, private cardsService: CardsService, protected accountService: AccountService) {
+    constructor(private fb: FormBuilder, private cardsService: CardsService, protected accountService: AccountService, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -43,11 +44,10 @@ export class PaymentComponent implements OnInit {
         if (this.paymentForm.valid) {
             this.cardsService.payByCard(this.paymentForm.value['cardNumber'].replaceAll(" ", ""), this.paymentForm.value['expirationDate'].replace("/", ""), this.paymentForm.value['cvv'], this.paymentForm.value['uuid'], this.paymentForm.value['amount']).subscribe({
                 next: (response) => {
-                    console.log('Payment successful:', response);
                     this.paymentForm.reset();
                 },
                 error: (error) => {
-                    console.error('Error processing payment:', error);
+                    this.notificationService.addNotification(error);
                 }
             });
         } else {

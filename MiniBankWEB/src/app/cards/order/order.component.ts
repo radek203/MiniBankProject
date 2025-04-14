@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgForOf, NgIf} from "@angular/common";
 import {CardsService} from '../../services/cards.service';
 import {AccountService} from '../../services/account.service';
+import {NotificationService} from '../../services/notification.service';
 
 @Component({
     selector: 'app-order',
@@ -21,7 +22,7 @@ export class OrderComponent implements OnInit {
 
     orderForm!: FormGroup;
 
-    constructor(private fb: FormBuilder, private cardsService: CardsService, protected accountService: AccountService) {
+    constructor(private fb: FormBuilder, private cardsService: CardsService, protected accountService: AccountService, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -37,10 +38,10 @@ export class OrderComponent implements OnInit {
                 this.cardsService.createCard(client).subscribe({
                     next: (response) => {
                         this.cardsService.cards.push(response);
-                        console.log('Card ordered successfully:', response);
+                        this.orderForm.reset();
                     },
                     error: (error) => {
-                        console.error('Error ordering card:', error);
+                        this.notificationService.addNotification(error);
                     }
                 });
             }

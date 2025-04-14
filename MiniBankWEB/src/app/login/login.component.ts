@@ -5,6 +5,7 @@ import {User} from '../models/user.model';
 import {AuthService} from '../services/auth.service';
 import {TokenResponse} from '../models/token.model';
 import {Router} from '@angular/router';
+import {NotificationService} from '../services/notification.service';
 
 @Component({
     selector: 'app-login',
@@ -20,7 +21,7 @@ export class LoginComponent implements OnInit {
     loginForm!: FormGroup;
     submitted = false;
 
-    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -41,7 +42,7 @@ export class LoginComponent implements OnInit {
                     });
                 },
                 error: (error) => {
-                    console.error('Registration failed', error);
+                    this.notificationService.addNotification(error);
                 }
             })
         }
@@ -53,7 +54,7 @@ export class LoginComponent implements OnInit {
                 this.authService.setUser(res);
             },
             error: (error) => {
-                console.error('Failed to load user data', error);
+                this.notificationService.addNotification(error);
             }
         });
     }

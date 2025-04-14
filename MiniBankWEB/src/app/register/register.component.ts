@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {NgIf} from '@angular/common';
 import {AuthService} from '../services/auth.service';
 import {User} from '../models/user.model';
+import {NotificationService} from '../services/notification.service';
 
 @Component({
     selector: 'app-register',
@@ -18,7 +19,7 @@ export class RegisterComponent implements OnInit {
     registrationForm!: FormGroup;
     submitted = false;
 
-    constructor(private fb: FormBuilder, private authService: AuthService) {
+    constructor(private fb: FormBuilder, private authService: AuthService, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -43,10 +44,10 @@ export class RegisterComponent implements OnInit {
         if (this.registrationForm.valid) {
             this.authService.postRegistration(this.registrationForm.value).subscribe({
                 next: (response: User) => {
-                    console.log('Registration successful', response);
+
                 },
                 error: (error) => {
-                    console.error('Registration failed', error);
+                    this.notificationService.addNotification(error);
                 }
             })
         }

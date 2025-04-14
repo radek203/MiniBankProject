@@ -34,7 +34,7 @@ export class AuthService {
                     this.setUser(JSON.parse(user));
                     this.handleLogin(res.token);
                 },
-                error: (err) => {
+                error: (error) => {
                     this.logout();
                 }
             });

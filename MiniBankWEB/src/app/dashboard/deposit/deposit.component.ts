@@ -3,6 +3,9 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {NgForOf, NgIf} from '@angular/common';
 import {FormatAccountNumberPipe} from '../../format-account-number.pipe';
 import {AccountService} from '../../services/account.service';
+import {BalanceChangeStatus} from '../../models/balance-change.model';
+import {AuthService} from '../../services/auth.service';
+import {NotificationService} from '../../services/notification.service';
 
 @Component({
     selector: 'app-deposit',
@@ -19,7 +22,7 @@ export class DepositComponent {
 
     transferForm!: FormGroup;
 
-    constructor(private fb: FormBuilder, protected accountService: AccountService) {
+    constructor(private fb: FormBuilder, protected accountService: AccountService, private authService: AuthService, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -31,7 +34,27 @@ export class DepositComponent {
 
     sendTransfer(): void {
         if (this.transferForm.valid) {
-
+            const account = this.transferForm.value['fromAccount'];
+            this.accountService.makeDeposit(account, this.transferForm.value['amount']).subscribe({
+                next: (response) => {
+                    this.transferForm.reset();
+                    setTimeout(() => {
+                        this.accountService.getBalanceChange(account, response.id).subscribe({
+                            next: (response) => {
+                                if (response.status === BalanceChangeStatus.COMPLETED) {
+                                    this.accountService.loadAccounts(this.authService.user.id);
+                                }
+                            },
+                            error: (error) => {
+                                this.notificationService.addNotification(error);
+                            }
+                        });
+                    }, 1000);
+                },
+                error: (error) => {
+                    this.notificationService.addNotification(error);
+                }
+            });
         } else {
             this.transferForm.markAllAsTouched();
         }

@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {AuthService} from '../services/auth.service';
+import {NotificationService} from '../services/notification.service';
 
 @Component({
     selector: 'app-settings',
@@ -15,7 +16,7 @@ import {AuthService} from '../services/auth.service';
 export class SettingsComponent {
     userForm!: FormGroup;
 
-    constructor(private fb: FormBuilder, private authService: AuthService) {
+    constructor(private fb: FormBuilder, private authService: AuthService, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -38,7 +39,7 @@ export class SettingsComponent {
                     this.authService.logout();
                 },
                 error: (error) => {
-                    console.error('Error updating user:', error);
+                    this.notificationService.addNotification(error);
                 }
             });
         } else {

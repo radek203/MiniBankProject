@@ -1,0 +1,8 @@
+@for (notification of notificationService.errors; let i = $index; track i) {
+    <div class="ntf">
+        <div class="ntf-text">
+            <strong>Error:</strong> {{ notification }}
+        </div>
+        <div class="ntf-close"><i class="fa-solid fa-xmark" (click)="notificationService.removeNotification(i)"></i></div>
+    </div>
+}

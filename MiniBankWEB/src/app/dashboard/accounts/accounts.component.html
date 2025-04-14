@@ -1,6 +1,6 @@
 <div class="row">
     @for (account of this.accountService.accounts; let accountIndex = $index; track accountIndex) {
-        <div class="col-md-6">
+        <div class="col-xl-6">
             <div class="account">
                 <div class="account-content">
                     <h3><i class="fa-solid fa-wallet"></i> {{ account.accountNumber | formatAccountNumber }}</h3>

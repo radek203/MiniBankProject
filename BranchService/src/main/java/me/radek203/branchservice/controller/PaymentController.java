@@ -24,7 +24,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.makeTransfer(from, to, "", amount));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/transfer/{id}")
     public ResponseEntity<Transfer> getTransfer(@PathVariable UUID id) {
         return ResponseEntity.ok(paymentService.getTransfer(id));
     }
@@ -32,6 +32,11 @@ public class PaymentController {
     @GetMapping("/payment/{from}/{to}/{amount}")
     public ResponseEntity<Transfer> makePaymentTransfer(@PathVariable String from, @PathVariable UUID to, @PathVariable double amount) {
         return ResponseEntity.ok(paymentService.makePaymentTransfer(from, to, "", amount));
+    }
+
+    @GetMapping("/balance/{id}")
+    public ResponseEntity<BalanceChange> getBalance(@PathVariable UUID id) {
+        return ResponseEntity.ok(paymentService.getBalanceChange(id));
     }
 
     @GetMapping("/deposit/{account}/{amount}")

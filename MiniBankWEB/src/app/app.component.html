@@ -1,22 +1,23 @@
+<app-notifications class="notification"></app-notifications>
 <div class="main">
     <div class="menu">
-        <h2><i class="fa-solid fa-piggy-bank"></i> {{ pageConfig.name }}</h2>
+        <h2><i class="fa-solid fa-piggy-bank"></i> <span class="nav-hidden">{{ pageConfig.name }}</span></h2>
         <nav role="navigation" aria-label="Main Menu">
             <div class="nav-menu">
                 @if (authService.isAuth) {
                     <a routerLink="/dashboard" routerLinkActive="selected" class="nav-link"><i
-                        class="fa-solid fa-chart-line"></i> Dashboard</a>
+                        class="fa-solid fa-chart-line"></i> <span class="nav-hidden">Dashboard</span></a>
                     <a routerLink="/cards" routerLinkActive="selected" class="nav-link"><i
-                        class="fa-solid fa-credit-card"></i> Credit Cards</a>
+                        class="fa-solid fa-credit-card"></i> <span class="nav-hidden">Credit Cards</span></a>
                     <a routerLink="/settings" routerLinkActive="selected" class="nav-link"><i
-                        class="fa-solid fa-gears"></i> Settings</a>
+                        class="fa-solid fa-gears"></i> <span class="nav-hidden">Settings</span></a>
                     <a (click)="onLogout()" routerLinkActive="selected" class="nav-link"><i
-                        class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                        class="fa-solid fa-right-from-bracket"></i> <span class="nav-hidden">Logout</span></a>
                 } @else {
                     <a routerLink="/login" routerLinkActive="selected" class="nav-link"><i
-                        class="fa-solid fa-right-to-bracket"></i> Sign in</a>
+                        class="fa-solid fa-right-to-bracket"></i> <span class="nav-hidden">Sign in</span></a>
                     <a routerLink="/register" routerLinkActive="selected" class="nav-link"><i
-                        class="fa-solid fa-user-plus"></i> Sign up</a>
+                        class="fa-solid fa-user-plus"></i> <span class="nav-hidden">Sign up</span></a>
                 }
             </div>
         </nav>
@@ -25,8 +26,8 @@
                 <img src="https://avatars.githubusercontent.com/u/57212337?v=4" alt="Profile Picture"
                      class="profile-picture">
                 <div class="profile-data">
-                    <span class="profile-email">{{ authService.user.email }}</span><br>
-                    <span class="profile-username color-second">&#64;{{ authService.user.username }}</span>
+                    <div class="profile-email"><span class="nav-hidden">{{ authService.user.email }}</span></div>
+                    <div class="profile-username color-second"><span class="nav-hidden">&#64;{{ authService.user.username }}</span></div>
                 </div>
             </div>
         }

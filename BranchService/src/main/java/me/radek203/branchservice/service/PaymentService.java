@@ -19,6 +19,8 @@ public interface PaymentService {
 
     void completedTransfer(Transfer transfer);
 
+    BalanceChange getBalanceChange(UUID id);
+
     BalanceChange makeDeposit(String account, double amount);
 
     BalanceChange makeWithdraw(String account, double amount);

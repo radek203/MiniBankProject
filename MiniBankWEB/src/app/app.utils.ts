@@ -14,10 +14,31 @@ export function getBranchShortName(id: number): string {
     return branchShortNames[(id - 1)];
 }
 
-export function getBranchUrl(id: number): string {
+export function getBranchUrl(id: number | undefined): string {
     const branchUrls = [
         'krakow',
         'warsaw'
     ];
+    if (id === undefined) {
+        return '';
+    }
     return branchUrls[(id - 1)];
+}
+
+function getErrorText(error: string) {
+    switch (error) {
+    }
+    return "Undefined error occurred";
+}
+
+export function getMessages(error: any) {
+    const errors: string[] = [];
+    if (error.error && error.error.message) {
+        error.error.message.split(";").forEach((err: string) => {
+            errors.push(getErrorText(err));
+        });
+    } else {
+        errors.push(getErrorText(""));
+    }
+    return errors;
 }

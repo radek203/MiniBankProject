@@ -1,18 +1,21 @@
-.main {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0;
-    grid-row-gap: 0;
+.notification {
+    position: absolute;
+    width: 300px;
+    right: 0;
+    margin: 10px;
+    z-index: 1;
 }
 
 .menu {
     height: 100%;
-    width: calc(100% / 6);
-    grid-area: 1 / 1 / 6 / 2;
+    width: 320px;
     padding: 20px;
     box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.8);
     position: fixed;
+
+    h2 span {
+        margin-left: 10px;
+    }
 
     .nav-menu {
         margin-left: 14px;
@@ -71,6 +74,28 @@
 }
 
 .content {
-    grid-area: 1 / 2 / 6 / 7;
+    width: calc(100% - 320px);
     padding: 20px;
+    margin-left: 320px;
+}
+
+@media (max-width: 1199px) {
+    .menu {
+        width: 90px;
+        text-align: center;
+
+        a {
+            width: initial !important;
+        }
+    }
+    .content {
+        width: calc(100% - 90px);
+        margin-left: 90px;
+    }
+    .nav-menu {
+        margin-left: 0 !important;
+    }
+    .nav-hidden {
+        display: none;
+    }
 }

@@ -1,4 +1,4 @@
-.col-md-6 {
+.col-xl-6 {
     padding: 20px;
 }
 
@@ -24,6 +24,7 @@
 
     &-content {
         grid-area: 1 / 1 / 6 / 5;
+        padding-right: 20px;
     }
 
     &-balance {

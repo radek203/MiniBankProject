@@ -3,6 +3,9 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgForOf, NgIf} from '@angular/common';
 import {FormatAccountNumberPipe} from '../../format-account-number.pipe';
 import {AccountService} from '../../services/account.service';
+import {AuthService} from '../../services/auth.service';
+import {TransferStatus} from '../../models/transfer.model';
+import {NotificationService} from '../../services/notification.service';
 
 @Component({
     selector: 'app-transfer',
@@ -20,7 +23,7 @@ export class TransferComponent implements OnInit {
 
     transferForm!: FormGroup;
 
-    constructor(private fb: FormBuilder, protected accountService: AccountService) {
+    constructor(private fb: FormBuilder, protected accountService: AccountService, private authService: AuthService, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -43,7 +46,27 @@ export class TransferComponent implements OnInit {
 
     sendTransfer(): void {
         if (this.transferForm.valid) {
-
+            const account = this.transferForm.value['fromAccount'];
+            this.accountService.makeTransfer(account, this.transferForm.value['toAccount'].replaceAll(" ", ""), this.transferForm.value['amount']).subscribe({
+                next: (response) => {
+                    this.transferForm.reset();
+                    setTimeout(() => {
+                        this.accountService.getTransfer(account, response.id).subscribe({
+                            next: (response) => {
+                                if (response.status === TransferStatus.COMPLETED) {
+                                    this.accountService.loadAccounts(this.authService.user.id);
+                                }
+                            },
+                            error: (error) => {
+                                this.notificationService.addNotification(error);
+                            }
+                        });
+                    }, 1000);
+                },
+                error: (error) => {
+                    this.notificationService.addNotification(error);
+                }
+            });
         } else {
             this.transferForm.markAllAsTouched();
         }

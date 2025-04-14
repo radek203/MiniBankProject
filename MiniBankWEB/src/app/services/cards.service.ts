@@ -33,7 +33,6 @@ export class CardsService {
     }
 
     payByCard(cardNumber: string, date: string, cvv: string, service: string, amount: number) {
-        console.log('cardNumber', cardNumber);
         return this.httpService.patch('creditcard/pay/' + cardNumber + '/' + date + '/' + cvv + '/' + service + '/' + amount, {});
     }
 

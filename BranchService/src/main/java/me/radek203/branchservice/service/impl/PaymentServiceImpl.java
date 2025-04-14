@@ -158,6 +158,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public BalanceChange getBalanceChange(UUID id) {
+        return balanceChangeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/balance-change-not-found", String.valueOf(id)));
+    }
+
+    @Override
     @Transactional
     public BalanceChange makeDeposit(String account, double amount) {
         Client client = clientRepository.findByAccountNumber(account).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
