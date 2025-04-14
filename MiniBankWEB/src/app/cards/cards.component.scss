@@ -6,6 +6,7 @@
 .cards {
     margin-top: 20px;
     margin-bottom: 20px;
+    margin-right: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
@@ -178,4 +179,19 @@ form {
 
 #chip {
     display: none;
+}
+
+@media (max-width: 767px) {
+    .number {
+        font-size: 5vw;
+    }
+    .account {
+        display: none;
+    }
+    .name {
+        bottom: 10px;
+    }
+    .expiry {
+        bottom: 18px;
+    }
 }

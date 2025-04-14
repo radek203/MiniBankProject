@@ -26,3 +26,10 @@
     width: 240px;
     margin-bottom: 10px;
 }
+
+@media (max-width: 767px) {
+    .w200 {
+        width: 100%;
+        font-size: 14px;
+    }
+}

@@ -1,14 +1,14 @@
 <h3>Log In To Your Account</h3>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" aria-label="Login form">
+<form (ngSubmit)="onSubmit()" [formGroup]="loginForm" aria-label="Login form">
     <div class="form-group">
         <label for="username">Username</label>
         <input
-            type="text"
-            id="username"
-            class="form-control"
-            formControlName="username"
             [attr.aria-invalid]="submitted && loginForm.controls['username'].invalid"
             aria-required="true"
+            class="form-control"
+            formControlName="username"
+            id="username"
+            type="text"
         />
         <div *ngIf="submitted && loginForm.controls['username'].invalid" class="error">
             Username is required.
@@ -18,17 +18,17 @@
     <div class="form-group">
         <label for="password">Password</label>
         <input
-            type="password"
-            id="password"
-            class="form-control"
-            formControlName="password"
             [attr.aria-invalid]="submitted && loginForm.controls['password'].invalid"
             aria-required="true"
+            class="form-control"
+            formControlName="password"
+            id="password"
+            type="password"
         />
         <div *ngIf="submitted && loginForm.controls['password'].invalid" class="error">
             Password is required.
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Sign in</button>
+    <button class="btn btn-primary" type="submit">Sign in</button>
 </form>

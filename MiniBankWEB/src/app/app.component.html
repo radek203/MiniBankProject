@@ -2,7 +2,7 @@
 <div class="main">
     <div class="menu">
         <h2><i class="fa-solid fa-piggy-bank"></i> <span class="nav-hidden">{{ pageConfig.name }}</span></h2>
-        <nav role="navigation" aria-label="Main Menu">
+        <nav aria-label="Main Menu" role="navigation">
             <div class="nav-menu">
                 @if (authService.isAuth) {
                     <a routerLink="/dashboard" routerLinkActive="selected" class="nav-link"><i
@@ -33,6 +33,6 @@
         }
     </div>
     <div class="content">
-        <router-outlet/>
+        <router-outlet class="pt20"/>
     </div>
 </div>

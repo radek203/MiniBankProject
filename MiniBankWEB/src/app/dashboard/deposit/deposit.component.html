@@ -1,8 +1,8 @@
 <span class="heading">Deposit</span>
-<form [formGroup]="transferForm" (ngSubmit)="sendTransfer()" class="transfer-form">
+<form (ngSubmit)="sendTransfer()" [formGroup]="transferForm" class="transfer-form">
     <div class="form-group">
         <label for="fromAccount">Select source account:</label>
-        <select id="fromAccount" formControlName="fromAccount">
+        <select formControlName="fromAccount" id="fromAccount">
             <option [ngValue]="null" disabled selected>-- Select account --</option>
             <option *ngFor="let account of this.accountService.accounts" [ngValue]="account.accountNumber">
                 {{ account.accountNumber | formatAccountNumber }}
@@ -13,17 +13,17 @@
     <div class="form-group">
         <label for="amount">Amount:</label>
         <input
-            id="amount"
-            type="number"
-            min="0.01"
-            step="0.01"
             formControlName="amount"
+            id="amount"
+            min="0.01"
             placeholder="Amount in USD"
+            step="0.01"
+            type="number"
         />
-        <div class="error" *ngIf="transferForm.get('amount')?.invalid && transferForm.get('amount')?.touched">
+        <div *ngIf="transferForm.get('amount')?.invalid && transferForm.get('amount')?.touched" class="error">
             Enter a valid amount (greater than 0).
         </div>
     </div>
 
-    <button type="submit" [disabled]="transferForm.invalid">Deposit</button>
+    <button [disabled]="transferForm.invalid" type="submit">Deposit</button>
 </form>

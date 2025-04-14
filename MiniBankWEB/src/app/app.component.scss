@@ -79,6 +79,11 @@
     margin-left: 320px;
 }
 
+.pt20 {
+    padding-top: 20px;
+    display: block;
+}
+
 @media (max-width: 1199px) {
     .menu {
         width: 90px;
@@ -97,5 +102,11 @@
     }
     .nav-hidden {
         display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .content {
+        padding: 0;
     }
 }

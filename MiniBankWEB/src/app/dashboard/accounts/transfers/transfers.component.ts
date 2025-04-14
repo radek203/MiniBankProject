@@ -4,14 +4,14 @@ import {CurrencyPipe, DatePipe} from '@angular/common';
 import {FormatAccountNumberPipe} from '../../../format-account-number.pipe';
 
 @Component({
-  selector: 'app-transfers',
+    selector: 'app-transfers',
     imports: [
         DatePipe,
         CurrencyPipe,
         FormatAccountNumberPipe
     ],
-  templateUrl: './transfers.component.html',
-  styleUrl: './transfers.component.scss'
+    templateUrl: './transfers.component.html',
+    styleUrl: './transfers.component.scss'
 })
 export class TransfersComponent {
 

@@ -3,13 +3,13 @@ import {AccountService} from '../../../services/account.service';
 import {CurrencyPipe, DatePipe} from '@angular/common';
 
 @Component({
-  selector: 'app-balancechanges',
+    selector: 'app-balancechanges',
     imports: [
         DatePipe,
         CurrencyPipe
     ],
-  templateUrl: './balancechanges.component.html',
-  styleUrl: './balancechanges.component.scss'
+    templateUrl: './balancechanges.component.html',
+    styleUrl: './balancechanges.component.scss'
 })
 export class BalancechangesComponent {
 

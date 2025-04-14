@@ -13,7 +13,7 @@ import {NotificationsComponent} from './notifications/notifications.component';
 })
 export class AppComponent implements OnInit {
     title = 'MiniBankWEB';
-
+    protected readonly pageConfig = pageConfig;
 
     constructor(protected authService: AuthService, private titleService: Title) {
         this.titleService.setTitle(pageConfig.name);
@@ -26,8 +26,6 @@ export class AppComponent implements OnInit {
     onLogout(): void {
         this.authService.logout();
     }
-
-    protected readonly pageConfig = pageConfig;
 }
 
 export const pageConfig: Config = {
