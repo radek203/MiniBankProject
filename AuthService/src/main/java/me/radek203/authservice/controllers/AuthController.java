@@ -12,6 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * AuthController is a REST controller that handles authentication-related requests.
+ * It provides endpoints for user registration, login, token refresh, and user updates.
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")

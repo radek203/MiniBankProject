@@ -22,6 +22,12 @@ public class JWTTokenUtils {
     @Value("${app.jwt.expiration}")
     private int expiration;
 
+    /**
+     * Generates a JWT token for the given username.
+     *
+     * @param username the username to include in the token
+     * @return the generated JWT token
+     */
     public final String generateToken(final String username) {
         return Jwts.builder()
                 .subject(username)
@@ -31,23 +37,53 @@ public class JWTTokenUtils {
                 .compact();
     }
 
+    /**
+     * Validates the given JWT token for the specified username.
+     *
+     * @param token    the JWT token to validate
+     * @param username the username to check against
+     * @return true if the token is valid, false otherwise
+     */
     public final boolean isTokenValid(final String token, final String username) {
         return getUsername(token).equals(username) && !isTokenExpired(token);
     }
 
+    /**
+     * Retrieves the username from the given JWT token.
+     *
+     * @param token the JWT token to extract the username from
+     * @return the username extracted from the token
+     */
     public final String getUsername(final String token) {
         return getClaims(token).getSubject();
     }
 
+    /**
+     * Checks if the given JWT token is expired.
+     *
+     * @param token the JWT token to check
+     * @return true if the token is expired, false otherwise
+     */
     private boolean isTokenExpired(final String token) {
         return getClaims(token).getExpiration().before(new Date(System.currentTimeMillis()));
     }
 
+    /**
+     * Retrieves the secret key used for signing the JWT token.
+     *
+     * @return the secret key
+     */
     private SecretKey getKey() {
         final byte[] key = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(key);
     }
 
+    /**
+     * Retrieves the claims from the given JWT token.
+     *
+     * @param token the JWT token to extract claims from
+     * @return the claims extracted from the token
+     */
     private Claims getClaims(final String token) {
         try {
             return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();

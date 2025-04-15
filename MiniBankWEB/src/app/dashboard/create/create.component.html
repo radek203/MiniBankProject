@@ -1,0 +1,57 @@
+<span class="heading">Create Account</span>
+<form (ngSubmit)="submitClientForm()" [formGroup]="clientForm" class="client-form">
+    <div class="form-group">
+        <label for="branch">Select Branch:</label>
+        <select formControlName="branch" id="branch">
+            <option [ngValue]="null" disabled selected>-- Select branch --</option>
+            <option *ngFor="let branch of getBranches()" [ngValue]="branch.id">
+                {{ branch.name }}
+            </option>
+        </select>
+        <div *ngIf="clientForm.get('branch')?.invalid && clientForm.get('branch')?.touched" class="error">
+            Branch is required.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="firstName">First Name:</label>
+        <input formControlName="firstName" id="firstName" placeholder="Enter first name" type="text"/>
+        <div *ngIf="clientForm.get('firstName')?.invalid && clientForm.get('firstName')?.touched" class="error">
+            First name is required.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="lastName">Last Name:</label>
+        <input formControlName="lastName" id="lastName" placeholder="Enter last name" type="text"/>
+        <div *ngIf="clientForm.get('lastName')?.invalid && clientForm.get('lastName')?.touched" class="error">
+            Last name is required.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input formControlName="phone" id="phone" placeholder="Enter phone number" type="tel"/>
+        <div *ngIf="clientForm.get('phone')?.invalid && clientForm.get('phone')?.touched" class="error">
+            Phone number is required.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="address">Address:</label>
+        <input formControlName="address" id="address" placeholder="Enter address" type="text"/>
+        <div *ngIf="clientForm.get('address')?.invalid && clientForm.get('address')?.touched" class="error">
+            Address is required.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="city">City:</label>
+        <input formControlName="city" id="city" placeholder="Enter city" type="text"/>
+        <div *ngIf="clientForm.get('city')?.invalid && clientForm.get('city')?.touched" class="error">
+            City is required.
+        </div>
+    </div>
+
+    <button [disabled]="clientForm.invalid" type="submit">Create Account</button>
+</form>

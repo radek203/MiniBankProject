@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
+/**
+ * CreditCardClient is an interface that defines a client for interacting with the CreditCardService.
+ * It provides methods to create a credit card for a specific bank and account.
+ */
 @HttpExchange
 public interface CreditCardClient extends Client {
 

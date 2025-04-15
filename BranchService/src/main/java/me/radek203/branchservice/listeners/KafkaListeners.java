@@ -4,31 +4,36 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import me.radek203.branchservice.entity.BalanceChange;
-import me.radek203.branchservice.entity.Client;
 import me.radek203.branchservice.entity.Transfer;
-import me.radek203.branchservice.repository.ClientRepository;
+import me.radek203.branchservice.service.ClientService;
 import me.radek203.branchservice.service.PaymentService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
+/**
+ * KafkaListeners is a component that listens to various Kafka topics and processes the messages.
+ * It handles client creation, transfer creation, and balance change events.
+ */
 @AllArgsConstructor
 @Component
 public class KafkaListeners {
 
-    private final ClientRepository clientRepository;
     private final PaymentService paymentService;
+    private final ClientService clientService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = "branch-${branch.id}-client-create-error", groupId = "branch_group")
     void listenerClientError(String data) throws JsonProcessingException {
-        Client client = objectMapper.readValue(data, Client.class);
-        clientRepository.deleteById(client.getId());
+        UUID id = objectMapper.readValue(data, UUID.class);
+        clientService.failedClient(id);
     }
 
     @KafkaListener(topics = "branch-${branch.id}-client-create-active", groupId = "branch_group")
     void listenerClientCreate(String data) throws JsonProcessingException {
-        Client client = objectMapper.readValue(data, Client.class);
-        clientRepository.save(client);
+        UUID id = objectMapper.readValue(data, UUID.class);
+        clientService.completedClient(id);
     }
 
     @KafkaListener(topics = "branch-${branch.id}-transfer-create", groupId = "branch_group")

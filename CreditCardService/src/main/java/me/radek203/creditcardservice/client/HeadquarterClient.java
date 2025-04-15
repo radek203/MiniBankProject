@@ -7,6 +7,10 @@ import org.springframework.web.service.annotation.HttpExchange;
 
 import java.util.List;
 
+/**
+ * HeadquarterClient is an interface that defines a client for interacting with the headquarter service.
+ * It extends the Client interface and provides methods to retrieve account information by user ID.
+ */
 @HttpExchange
 public interface HeadquarterClient extends Client {
 

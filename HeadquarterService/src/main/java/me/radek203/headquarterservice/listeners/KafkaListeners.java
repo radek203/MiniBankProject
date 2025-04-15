@@ -11,6 +11,10 @@ import me.radek203.headquarterservice.service.PaymentService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * KafkaListeners is a component that listens to various Kafka topics and processes the messages.
+ * It handles client creation, transfer creation, and balance change events.
+ */
 @AllArgsConstructor
 @Component
 public class KafkaListeners {

@@ -17,11 +17,16 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import reactor.core.publisher.Mono;
 
+/**
+ * WebClientConfig is a configuration class that sets up WebClient instances for making HTTP requests
+ * to external services. It also provides error handling for the responses.
+ */
 @AllArgsConstructor
 @Configuration
 public class WebClientConfig {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
     {
         objectMapper.registerModule(new JavaTimeModule());
     }

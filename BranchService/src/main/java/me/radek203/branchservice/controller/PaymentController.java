@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * PaymentController is a REST controller that handles payment-related requests.
+ * It provides endpoints for making transfers, deposits, withdrawals, and retrieving transfer and balance information.
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping("/transfer")

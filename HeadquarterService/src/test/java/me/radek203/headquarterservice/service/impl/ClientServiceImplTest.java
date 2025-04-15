@@ -12,12 +12,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,7 +43,7 @@ class ClientServiceImplTest {
 
         assertEquals(ClientStatus.ACTIVE, client.getStatus());
         verify(clientRepository).save(client);
-        verify(kafkaSenderService).sendMessage("branch-1-client-create-active", clientId.toString(), client);
+        verify(kafkaSenderService).sendMessage("branch-1-client-create-active", clientId.toString(), clientId);
     }
 
     @Test
@@ -88,5 +88,38 @@ class ClientServiceImplTest {
         List<Client> result = clientService.getClientsByUserId(1);
 
         assertEquals(2, result.size());
+    }
+
+    @Test
+    void shouldReturnListOfAccountNumbersForGivenUserId() {
+        int userId = 42;
+
+        Client client1 = new Client();
+        client1.setAccountNumber("12345678901234567890123456");
+
+        Client client2 = new Client();
+        client2.setAccountNumber("65432109876543210987654321");
+
+        List<Client> clients = List.of(client1, client2);
+
+        Mockito.when(clientRepository.findByUserId(userId)).thenReturn(clients);
+
+        List<String> accountNumbers = clientService.getAccountNumbersByUserId(userId);
+
+        assertEquals(2, accountNumbers.size());
+        assertTrue(accountNumbers.contains("12345678901234567890123456"));
+        assertTrue(accountNumbers.contains("65432109876543210987654321"));
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenUserHasNoAccounts() {
+        int userId = 100;
+
+        Mockito.when(clientRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+
+        List<String> accountNumbers = clientService.getAccountNumbersByUserId(userId);
+
+        assertNotNull(accountNumbers);
+        assertTrue(accountNumbers.isEmpty());
     }
 }

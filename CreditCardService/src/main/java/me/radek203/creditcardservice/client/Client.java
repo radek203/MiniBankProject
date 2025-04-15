@@ -6,6 +6,10 @@ import org.springframework.http.ResponseEntity;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * Client interface for handling responses from external services.
+ * It provides methods to get responses and handle errors.
+ */
 public interface Client {
 
     default <K, V> V getResponse(String error, Function<K, ResponseEntity<V>> consumer, K key) {

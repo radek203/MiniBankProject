@@ -14,7 +14,7 @@ public class KafkaClientErrorHandlers {
         return (key, value) -> {
             try {
                 Client client = OBJECT_MAPPER.readValue(value, Client.class);
-                sender.sendMessage("branch-" + client.getBranch() + "-client-create-error", String.valueOf(client.getId()), client);
+                sender.sendMessage("branch-" + client.getBranch() + "-client-create-error", String.valueOf(client.getId()), client.getId());
                 return true;
             } catch (JsonProcessingException ignored) {
             }

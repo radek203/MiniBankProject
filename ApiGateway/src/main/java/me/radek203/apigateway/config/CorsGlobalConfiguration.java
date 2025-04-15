@@ -19,6 +19,11 @@ public class CorsGlobalConfiguration {
 
     private static final String ALLOWED_ORIGIN = "http://localhost:4200";
 
+    /**
+     * CORS filter to allow cross-origin requests.
+     *
+     * @return WebFilter
+     */
     @Bean
     public WebFilter corsFilter() {
         return (ServerWebExchange ctx, WebFilterChain chain) -> {

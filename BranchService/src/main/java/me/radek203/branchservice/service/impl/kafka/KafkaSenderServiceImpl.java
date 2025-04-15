@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import me.radek203.branchservice.config.AppProperties;
 import me.radek203.branchservice.service.KafkaSenderService;
 import me.radek203.branchservice.service.KafkaTopicErrorHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class KafkaSenderServiceImpl implements KafkaSenderService {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaSenderServiceImpl.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final AppProperties appProperties;
@@ -50,7 +53,7 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
                 return;
             }
         }
-        System.out.println("Error on Kafka topic: " + topic + ", Key: " + key + ", Value: " + value + " , Error: " + error + ", Direction: " + direction);
+        LOGGER.error("Error on Kafka topic: {}, Key: {}, Value: {} , Error: {}, Direction: {}", topic, key, value, error, direction);
     }
 
     private KafkaTopicErrorHandler getHandler(String topic) {

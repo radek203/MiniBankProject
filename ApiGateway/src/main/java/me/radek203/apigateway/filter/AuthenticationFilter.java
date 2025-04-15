@@ -23,6 +23,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private RouteValidator routeValidator;
     private AuthClient authClient;
 
+    /**
+     * Filter method to check if the request is secured and validate the JWT token.
+     * If the token is valid, it adds user information to the request headers.
+     *
+     * @param exchange the server web exchange
+     * @param chain    the gateway filter chain
+     * @return a Mono that indicates when the filter processing is complete
+     */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {

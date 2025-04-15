@@ -7,6 +7,10 @@ import org.springframework.web.service.annotation.HttpExchange;
 
 import java.util.UUID;
 
+/**
+ * HeadquarterClient is an interface that defines methods for interacting with the headquarter service.
+ * It uses Spring's WebClient to make HTTP requests to the headquarter service endpoints.
+ */
 @HttpExchange
 public interface HeadquarterClient extends Client {
 

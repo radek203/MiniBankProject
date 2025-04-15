@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ClientController is a REST controller that handles client-related requests.
+ * It provides endpoints for retrieving client information based on account number, user UUID, and user ID.
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping("/client")
@@ -36,7 +40,7 @@ public class ClientController {
 
     @GetMapping("/{id}/accounts")
     ResponseEntity<List<String>> getAccountsByUserId(@PathVariable int id) {
-        return ResponseEntity.ok(clientService.getClientsByUserId(id).stream().map(Client::getAccountNumber).toList());
+        return ResponseEntity.ok(clientService.getAccountNumbersByUserId(id));
     }
 
 }

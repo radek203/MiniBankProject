@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.function.Predicate;
 
+/**
+ * RouteValidator is a component that checks if a request is secured or not.
+ * It contains a list of allowed routes that do not require authentication.
+ */
 @Component
 public class RouteValidator {
 

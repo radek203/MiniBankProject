@@ -29,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
 
         client.setStatus(ClientStatus.ACTIVE);
         clientRepository.save(client);
-        kafkaSenderService.sendMessage("branch-" + client.getBranch() + "-client-create-active", String.valueOf(client.getId()), client);
+        kafkaSenderService.sendMessage("branch-" + client.getBranch() + "-client-create-active", String.valueOf(client.getId()), client.getId());
     }
 
     @Override
@@ -45,5 +45,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> getClientsByUserId(int userId) {
         return clientRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<String> getAccountNumbersByUserId(int userId) {
+        return clientRepository.findByUserId(userId).stream().map(Client::getAccountNumber).toList();
     }
 }

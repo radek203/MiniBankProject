@@ -25,6 +25,13 @@ export function getBranchUrl(id: number | undefined): string {
     return branchUrls[(id - 1)];
 }
 
+export function getBranches(): { id: number, name: string }[] {
+    return [
+        {id: 1, name: 'Krakow'},
+        {id: 2, name: 'Warsaw'}
+    ];
+}
+
 function getErrorText(error: string) {
     switch (error) {
         case "error/invalid-transfer":
@@ -75,6 +82,16 @@ function getErrorText(error: string) {
             return "Credit card creation failed. Please try again.";
         case "error/service-unavailable":
             return "Service unavailable. Please try again later.";
+        case "error/passenger-first-name-size":
+            return "Passenger first name is invalid. Please check the first name.";
+        case "error/passenger-last-name-size":
+            return "Passenger last name is invalid. Please check the last name.";
+        case "error/passenger-phone-number":
+            return "Passenger phone number is invalid. Please check the phone number.";
+        case "error/passenger-address-size":
+            return "Passenger address is invalid. Please check the address.";
+        case "error/passenger-city-size":
+            return "Passenger city is invalid. Please check the city.";
     }
     return "Undefined error occurred";
 }

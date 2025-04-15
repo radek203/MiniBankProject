@@ -17,10 +17,19 @@ import java.time.LocalDateTime;
 public class GlobalErrorHandler implements ErrorWebExceptionHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
     {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
+    /**
+     * This method handles exceptions that occur during the processing of requests.
+     * It checks if the exception is a ConnectException (indicating a service is unavailable)
+     *
+     * @param exchange the current server web exchange
+     * @param ex       the exception that occurred
+     * @return a Mono that completes when the response is written
+     */
     @SneakyThrows
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {

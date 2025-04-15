@@ -21,14 +21,36 @@ export class AccountService {
     loadAccounts(id: number) {
         this.httpService.get<Client[]>('client/' + id).subscribe({
             next: (response) => {
-                this.accounts = response;
+                this.accounts = [];
                 this.showTransfers = [];
                 this.showBalanceChanges = [];
+                response.forEach(account => {
+                    this.loadSingleAccount(account);
+                });
             },
             error: (error) => {
                 console.error('Error fetching accounts:', error);
             }
-        })
+        });
+    }
+
+    loadSingleAccount(client: Client) {
+        this.httpService.get<Client>(getBranchUrl(client.branch) + '/account/' + client.id).subscribe({
+            next: (response) => {
+                this.accounts.push(response);
+            },
+            error: (error) => {
+                console.error('Error fetching account:', error);
+            }
+        });
+    }
+
+    createAccount(client: Client) {
+        return this.httpService.post<Client>(getBranchUrl(client.branch) + '/account/create', client);
+    }
+
+    updateAccount(clientId: string, client: Client) {
+        return this.httpService.put<Client>(getBranchUrl(client.branch) + '/account/update/' + clientId, client);
     }
 
     getOwnerByAccountNumber(accountNumber: string): Client | undefined {

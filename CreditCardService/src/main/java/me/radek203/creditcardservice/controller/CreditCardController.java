@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * CreditCardController is a REST controller that handles HTTP requests related to credit card operations.
+ * It provides endpoints for creating, retrieving, deleting, and making payments with credit cards.
+ */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/creditcard")

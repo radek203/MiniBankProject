@@ -27,6 +27,13 @@ public class SecurityConfig {
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
 
+    /**
+     * Configures the security filter chain for the application.
+     *
+     * @param httpSecurity the HttpSecurity object to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -43,11 +50,21 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 
+    /**
+     * Provides a PasswordEncoder bean for encoding passwords.
+     *
+     * @return a PasswordEncoder instance
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Provides an AuthenticationProvider bean for authenticating users.
+     *
+     * @return an AuthenticationProvider instance
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -56,6 +73,13 @@ public class SecurityConfig {
         return provider;
     }
 
+    /**
+     * Provides an AuthenticationManager bean for managing authentication.
+     *
+     * @param config the AuthenticationConfiguration object
+     * @return an AuthenticationManager instance
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public AuthenticationManager authenticationManager(final AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ClientRepository interface for accessing client data in the database.
+ * It extends CrudRepository to provide CRUD operations and custom query methods.
+ */
 @Repository
 public interface ClientRepository extends CrudRepository<Client, UUID> {
 

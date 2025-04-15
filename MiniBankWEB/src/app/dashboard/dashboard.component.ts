@@ -4,6 +4,8 @@ import {TransferComponent} from './transfer/transfer.component';
 import {AuthService} from '../services/auth.service';
 import {DepositComponent} from './deposit/deposit.component';
 import {WithdrawComponent} from './withdraw/withdraw.component';
+import {CreateComponent} from './create/create.component';
+import {EditComponent} from './edit/edit.component';
 
 @Component({
     selector: 'app-dashboard',
@@ -11,7 +13,9 @@ import {WithdrawComponent} from './withdraw/withdraw.component';
         AccountsComponent,
         TransferComponent,
         DepositComponent,
-        WithdrawComponent
+        WithdrawComponent,
+        CreateComponent,
+        EditComponent
     ],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss'

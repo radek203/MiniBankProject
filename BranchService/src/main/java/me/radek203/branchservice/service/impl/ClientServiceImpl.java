@@ -6,6 +6,7 @@ import me.radek203.branchservice.config.AppProperties;
 import me.radek203.branchservice.entity.Client;
 import me.radek203.branchservice.entity.ClientStatus;
 import me.radek203.branchservice.entity.CreditCard;
+import me.radek203.branchservice.exception.ResourceNotFoundException;
 import me.radek203.branchservice.repository.ClientRepository;
 import me.radek203.branchservice.service.ClientService;
 import me.radek203.branchservice.service.KafkaSenderService;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Service
@@ -57,7 +60,39 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client updateClient(UUID id, Client client) {
+        Client clientFound = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(id)));
+        clientFound.setAddress(client.getAddress());
+        clientFound.setCity(client.getCity());
+        clientFound.setFirstName(client.getFirstName());
+        clientFound.setLastName(client.getLastName());
+        clientFound.setPhone(client.getPhone());
+        return clientRepository.save(clientFound);
+    }
+
+    @Override
+    public Client getClientById(UUID id) {
+        return clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(id)));
+    }
+
+    @Override
     public CreditCard orderCreditCard(String accountNumber) {
         return creditCardClient.getResponse("error/credit-card-creation", creditCardClient::createCreditCard, appProperties.getBranchId(), accountNumber);
+    }
+
+    @Override
+    public void completedClient(UUID id) {
+        Optional<Client> clientOptional = clientRepository.findById(id);
+        if (clientOptional.isEmpty() || clientOptional.get().getStatus() == ClientStatus.ACTIVE) {
+            return;
+        }
+        Client client = clientOptional.get();
+        client.setStatus(ClientStatus.ACTIVE);
+        clientRepository.save(client);
+    }
+
+    @Override
+    public void failedClient(UUID id) {
+        clientRepository.deleteById(id);
     }
 }

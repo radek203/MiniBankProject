@@ -9,6 +9,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
+/**
+ * Configuration class for WebClient.
+ * This class is responsible for creating and configuring the WebClient bean.
+ * It also creates an AuthClient bean that can be used to make requests to the auth service.
+ */
 @AllArgsConstructor
 @Configuration
 public class WebClientConfig {

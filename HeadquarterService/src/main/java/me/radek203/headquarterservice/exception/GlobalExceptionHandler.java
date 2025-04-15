@@ -4,7 +4,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,10 +12,13 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Global exception handler for the application.
+ * This class handles various exceptions that may occur during the execution of the application.
+ * It provides a centralized way to handle exceptions and return appropriate error responses.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -46,17 +48,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exception.getErrorDetails(), exception.getCode());
     }
 
+    /**
+     * Handles MethodArgumentNotValidException.
+     *
+     * @param ex      the exception
+     * @param headers the headers
+     * @param status  the status
+     * @param request the web request
+     * @return the response entity
+     */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
-        final Map<String, String> errors = new HashMap<>();
+        final StringBuilder errorMessage = new StringBuilder();
         final List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
         errorList.forEach((error) -> {
-            final String fieldName = ((FieldError) error).getField();
             final String message = error.getDefaultMessage();
-
-            errors.put(fieldName, message);
+            errorMessage.append(message).append(";");
         });
+        final String message = errorMessage.toString();
+        final String trimmedMessage = !message.isEmpty() ? message.substring(0, message.length() - 1) : message;
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        final ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), trimmedMessage, "", request.getDescription(false), ResourceInvalidException.ERROR_CODE);
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 }

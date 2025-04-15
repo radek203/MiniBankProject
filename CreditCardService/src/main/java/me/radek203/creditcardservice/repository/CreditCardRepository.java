@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * CreditCardRepository interface for accessing credit card data in the database.
+ * It extends CrudRepository to provide CRUD operations and custom query methods.
+ */
 @Repository
 public interface CreditCardRepository extends CrudRepository<CreditCard, Long> {
 
