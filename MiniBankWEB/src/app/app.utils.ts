@@ -73,6 +73,8 @@ function getErrorText(error: string) {
             return "User not found. Please check your username.";
         case "error/credit-card-creation":
             return "Credit card creation failed. Please try again.";
+        case "error/service-unavailable":
+            return "Service unavailable. Please try again later.";
     }
     return "Undefined error occurred";
 }

@@ -1,18 +1,30 @@
 package me.radek203.creditcardservice.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import me.radek203.creditcardservice.client.HeadquarterClient;
+import me.radek203.creditcardservice.exception.ClientException;
+import me.radek203.creditcardservice.exception.ErrorDetails;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
 @Configuration
 public class WebClientConfig {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
     @Bean
     @LoadBalanced
@@ -22,7 +34,7 @@ public class WebClientConfig {
 
     @Bean
     public WebClient hqWebClient() {
-        return webClientBuilder().baseUrl("http://headquarter-service").build();
+        return webClientBuilder().baseUrl("http://headquarter-service").filter(errorHandlingFilter()).build();
     }
 
     @Bean
@@ -34,6 +46,25 @@ public class WebClientConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    private ExchangeFilterFunction errorHandlingFilter() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+            if (clientResponse.statusCode().isError()) {
+                return clientResponse
+                        .bodyToMono(String.class)
+                        .flatMap(errorBody -> {
+                            ErrorDetails errorDetails;
+                            try {
+                                errorDetails = objectMapper.readValue(errorBody, ErrorDetails.class);
+                            } catch (JsonProcessingException e) {
+                                return Mono.error(new RuntimeException(e));
+                            }
+                            return Mono.error(new ClientException(errorDetails, clientResponse.statusCode()));
+                        });
+            }
+            return Mono.just(clientResponse);
+        });
     }
 
 }

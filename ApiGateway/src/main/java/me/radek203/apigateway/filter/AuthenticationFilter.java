@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.ConnectException;
+
 @Component
 @AllArgsConstructor
 public class AuthenticationFilter implements GlobalFilter, Ordered {
@@ -54,7 +56,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                         ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
                         return chain.filter(mutatedExchange);
                     })
-                    .onErrorResume(e -> Mono.error(new ResourceInvalidException("Invalid JWT token")));
+                    .onErrorResume(e -> {
+                        if (e instanceof ConnectException) {
+                            return Mono.error(e);
+                        }
+                        return Mono.error(new ResourceInvalidException("Invalid JWT token"));
+                    });
         }
         return chain.filter(exchange);
     }

@@ -41,6 +41,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, ResourceInvalidException.HTTP_STATUS);
     }
 
+
+    @ExceptionHandler(ClientException.class)
+    public final ResponseEntity<ErrorDetails> handleClientException(final ClientException exception, final WebRequest webRequest) {
+        return new ResponseEntity<>(exception.getErrorDetails(), exception.getCode());
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         final Map<String, String> errors = new HashMap<>();

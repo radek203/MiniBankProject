@@ -4,6 +4,8 @@ import me.radek203.creditcardservice.client.HeadquarterClient;
 import me.radek203.creditcardservice.entity.Bank;
 import me.radek203.creditcardservice.entity.CreditCard;
 import me.radek203.creditcardservice.entity.Transfer;
+import me.radek203.creditcardservice.exception.ClientException;
+import me.radek203.creditcardservice.exception.ErrorDetails;
 import me.radek203.creditcardservice.exception.ResourceInvalidException;
 import me.radek203.creditcardservice.exception.ResourceNotFoundException;
 import me.radek203.creditcardservice.repository.BankRepository;
@@ -74,9 +76,9 @@ class CreditCardServiceImplTest {
                         Mockito.eq("error/accounts-not-found"),
                         Mockito.any(),
                         Mockito.eq(userId)))
-                .thenThrow(new ResourceInvalidException("accounts not found"));
+                .thenThrow(new ClientException(new ErrorDetails(), HttpStatus.NOT_FOUND));
 
-        assertThrows(ResourceInvalidException.class, () -> creditCardService.getCreditCards(userId));
+        assertThrows(ClientException.class, () -> creditCardService.getCreditCards(userId));
     }
 
     @Test
