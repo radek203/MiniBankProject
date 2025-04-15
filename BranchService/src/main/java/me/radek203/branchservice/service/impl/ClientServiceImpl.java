@@ -1,9 +1,11 @@
 package me.radek203.branchservice.service.impl;
 
 import lombok.AllArgsConstructor;
+import me.radek203.branchservice.client.CreditCardClient;
 import me.radek203.branchservice.config.AppProperties;
 import me.radek203.branchservice.entity.Client;
 import me.radek203.branchservice.entity.ClientStatus;
+import me.radek203.branchservice.entity.CreditCard;
 import me.radek203.branchservice.repository.ClientRepository;
 import me.radek203.branchservice.service.ClientService;
 import me.radek203.branchservice.service.KafkaSenderService;
@@ -19,6 +21,7 @@ public class ClientServiceImpl implements ClientService {
     private final KafkaSenderService kafkaSenderService;
     private final ClientRepository clientRepository;
     private final AppProperties appProperties;
+    private final CreditCardClient creditCardClient;
 
     /**
      * We do not check if generated account number exists in other branches, We can do it but, for our example
@@ -51,5 +54,10 @@ public class ClientServiceImpl implements ClientService {
         Client clientSaved = clientRepository.save(client);
         kafkaSenderService.sendMessage("headquarter-client-create", String.valueOf(clientSaved.getId()), clientSaved);
         return clientSaved;
+    }
+
+    @Override
+    public CreditCard orderCreditCard(String accountNumber) {
+        return creditCardClient.getResponse("error/credit-card-creation", creditCardClient::createCreditCard, appProperties.getBranchId(), accountNumber);
     }
 }

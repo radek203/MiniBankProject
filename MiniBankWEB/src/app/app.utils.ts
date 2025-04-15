@@ -71,6 +71,8 @@ function getErrorText(error: string) {
             return "User already exists. Please use a username.";
         case "error/user-not-found":
             return "User not found. Please check your username.";
+        case "error/credit-card-creation":
+            return "Credit card creation failed. Please try again.";
     }
     return "Undefined error occurred";
 }

@@ -1,6 +1,5 @@
 package me.radek203.headquarterservice.entity;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
@@ -9,7 +8,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transfer {
@@ -20,9 +18,7 @@ public class Transfer {
     private String toAccount;
     private double amount;
     private TransferStatus status;
-    //@Transient
     private int fromBranchId;
-    //@Transient
     private int toBranchId;
     private long date;
 

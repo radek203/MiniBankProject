@@ -8,7 +8,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 import java.util.UUID;
 
 @HttpExchange
-public interface HeadquarterClient {
+public interface HeadquarterClient extends Client {
 
     @GetExchange("/client/{account}/branch")
     ResponseEntity<Integer> getBranchId(@PathVariable String account);

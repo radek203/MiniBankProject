@@ -7,7 +7,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 @HttpExchange
-public interface CreditCardClient {
+public interface CreditCardClient extends Client {
 
     @PostExchange("/creditcard/create/{bank}/{account}")
     ResponseEntity<CreditCard> createCreditCard(@PathVariable int bank, @PathVariable String account);

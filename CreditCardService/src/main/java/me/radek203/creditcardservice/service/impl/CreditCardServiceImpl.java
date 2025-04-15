@@ -11,7 +11,6 @@ import me.radek203.creditcardservice.repository.BankRepository;
 import me.radek203.creditcardservice.repository.CreditCardRepository;
 import me.radek203.creditcardservice.service.CreditCardService;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,9 +26,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreditCardServiceImpl implements CreditCardService {
 
-    private final HeadquarterClient headquarterClient;
+    private final HeadquarterClient hqClient;
     private final BankRepository bankRepository;
     private final CreditCardRepository creditCardRepository;
+    private final RestTemplate restTemplate;
 
     private String generateRandomString(int length) {
         SecureRandom random = new SecureRandom();
@@ -55,12 +55,8 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     @Override
     public List<CreditCard> getCreditCards(int userId) {
-        ResponseEntity<List<String>> accounts = headquarterClient.getAccountsByUserId(userId);
-        if (accounts.getStatusCode() != HttpStatus.OK || accounts.getBody() == null) {
-            throw new ResourceNotFoundException("error/accounts-not-found");
-        }
-        List<String> accountNumbers = accounts.getBody();
-        return creditCardRepository.findAllByAccountNumberIn(accountNumbers);
+        List<String> accounts = hqClient.getResponse("error/accounts-not-found", hqClient::getAccountsByUserId, userId);
+        return creditCardRepository.findAllByAccountNumberIn(accounts);
     }
 
     @Override
@@ -105,7 +101,6 @@ public class CreditCardServiceImpl implements CreditCardService {
             throw new ResourceInvalidException("error/card-expired");
         }
 
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Transfer> response;
         try {
             response = restTemplate.exchange(creditCard.getBank().getUrl() + "/transfer/payment/" + creditCard.getAccountNumber() + "/" + service + "/" + amount, HttpMethod.GET, null, Transfer.class);

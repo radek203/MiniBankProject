@@ -8,7 +8,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 import java.util.List;
 
 @HttpExchange
-public interface HeadquarterClient {
+public interface HeadquarterClient extends Client {
 
     @GetExchange("client/{id}/accounts")
     ResponseEntity<List<String>> getAccountsByUserId(@PathVariable int id);

@@ -20,9 +20,7 @@ public class Transfer {
     private String toAccount;
     private double amount;
     private TransferStatus status;
-    //@Transient
     private int fromBranchId;
-    //@Transient
     private int toBranchId;
     private long date;
 
