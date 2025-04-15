@@ -4,8 +4,10 @@
     @for (transfer of pagedTransfers; let i = $index; track i) {
         <div class="transfer">
             <span class="transfer-date">{{ transfer.date | date: 'dd/MM HH:mm' }}</span>
-            <span class="transfer-from">{{ (accountNumber == transfer.toAccount ? transfer.fromAccount : transfer.toAccount) | formatAccountNumber }}</span>
-            <span class="transfer-amount">{{ (accountNumber == transfer.toAccount ? transfer.amount : -transfer.amount) | currency }}</span>
+            <span
+                class="transfer-from">{{ (accountNumber == transfer.toAccount ? transfer.fromAccount : transfer.toAccount) | formatAccountNumber }}</span>
+            <span
+                class="transfer-amount">{{ (accountNumber == transfer.toAccount ? transfer.amount : -transfer.amount) | currency }}</span>
         </div>
     }
 

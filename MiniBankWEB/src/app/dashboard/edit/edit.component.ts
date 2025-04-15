@@ -34,7 +34,7 @@ export class EditComponent {
             phone: [client.phone, Validators.required],
             address: [client.address, Validators.required],
             city: [client.city, Validators.required],
-            accountNumber: [client.accountNumber, Validators.required]
+            accountNumber: [client.accountNumber.length == 0 ? null : client.accountNumber, Validators.required]
         });
     }
 

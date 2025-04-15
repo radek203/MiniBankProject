@@ -24,22 +24,22 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping("/{account}/branch")
-    ResponseEntity<Integer> getBranchId(@PathVariable String account) {
+    public ResponseEntity<Integer> getBranchId(@PathVariable String account) {
         return ResponseEntity.ok(clientService.getClientByAccountNumber(account).getBranch());
     }
 
     @GetMapping("/{id}/account")
-    ResponseEntity<String> getAccountNumber(@PathVariable UUID id) {
+    public ResponseEntity<String> getAccountNumber(@PathVariable UUID id) {
         return ResponseEntity.ok(clientService.getClientById(id).getAccountNumber());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<List<Client>> getAccounts(@PathVariable int id) {
+    public ResponseEntity<List<Client>> getAccounts(@PathVariable int id) {
         return ResponseEntity.ok(clientService.getClientsByUserId(id));
     }
 
     @GetMapping("/{id}/accounts")
-    ResponseEntity<List<String>> getAccountsByUserId(@PathVariable int id) {
+    public ResponseEntity<List<String>> getAccountsByUserId(@PathVariable int id) {
         return ResponseEntity.ok(clientService.getAccountNumbersByUserId(id));
     }
 
