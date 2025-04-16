@@ -2,6 +2,7 @@ package me.radek203.headquarterservice.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import me.radek203.headquarterservice.entity.BalanceChange;
 import me.radek203.headquarterservice.entity.Client;
@@ -22,6 +23,10 @@ public class KafkaListeners {
     private final ClientService clientService;
     private final PaymentService paymentService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
     @KafkaListener(topics = "headquarter-client-create", groupId = "hq_group")
     void listenerClientCreate(String data) throws JsonProcessingException {

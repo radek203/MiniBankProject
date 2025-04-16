@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayConfig {
 
-    /*
+    /**
      * This configuration class sets up the routes for the API Gateway.
      * It defines how incoming requests are routed to different services.
-     * It does not work when it is configured in application.yaml file.
+     * It does not work when it is configured in the application.yaml file.
      */
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {

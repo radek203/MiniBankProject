@@ -2,6 +2,7 @@ package me.radek203.headquarterservice.service.impl.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import me.radek203.headquarterservice.entity.BalanceChange;
 import me.radek203.headquarterservice.entity.Transfer;
 import me.radek203.headquarterservice.entity.TransferStatus;
@@ -11,6 +12,10 @@ import me.radek203.headquarterservice.service.KafkaTopicErrorHandler;
 public class KafkaTransferErrorHandlers {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    static {
+        OBJECT_MAPPER.registerModule(new JavaTimeModule());
+    }
 
     public static KafkaTopicErrorHandler getKafkaTransferCreateHandler(KafkaSenderService sender) {
         return (key, value) -> {

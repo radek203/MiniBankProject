@@ -18,34 +18,20 @@ import {Router} from '@angular/router';
 export class RegisterComponent implements OnInit {
 
     registrationForm!: FormGroup;
-    submitted = false;
 
     constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
         this.registrationForm = this.fb.group({
-            email: [
-                '',
-                [Validators.required, Validators.email]
-            ],
-            avatar: [
-                '',
-                [Validators.required]
-            ],
-            username: [
-                '',
-                [Validators.required]
-            ],
-            password: [
-                '',
-                [Validators.required, Validators.minLength(6)]
-            ]
+            email: ['', [Validators.required, Validators.email]],
+            avatar: ['', Validators.required],
+            username: ['', Validators.required],
+            password: ['', [Validators.required, Validators.minLength(6)]]
         });
     }
 
     onSubmit(): void {
-        this.submitted = true;
         if (this.registrationForm.valid) {
             this.authService.postRegistration(this.registrationForm.value).subscribe({
                 next: (response: User) => {
@@ -56,6 +42,8 @@ export class RegisterComponent implements OnInit {
                     this.notificationService.addNotification(error);
                 }
             })
+        } else {
+            this.registrationForm.markAllAsTouched();
         }
     }
 

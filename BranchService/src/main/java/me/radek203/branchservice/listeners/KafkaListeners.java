@@ -2,6 +2,7 @@ package me.radek203.branchservice.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import me.radek203.branchservice.entity.BalanceChange;
 import me.radek203.branchservice.entity.Transfer;
@@ -23,6 +24,10 @@ public class KafkaListeners {
     private final PaymentService paymentService;
     private final ClientService clientService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
     @KafkaListener(topics = "branch-${branch.id}-client-create-error", groupId = "branch_group")
     void listenerClientError(String data) throws JsonProcessingException {

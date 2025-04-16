@@ -1,6 +1,7 @@
 package me.radek203.authservice.entities.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class UserDTO {
     @NotNull(message = "error/email-required")
     private String email;
     @NotNull(message = "error/avatar-required")
+    @Pattern(regexp = "^https://.*", message = "error/avatar-invalid-url")
     private String avatar;
     private Role role;
     private LocalDateTime createdAt;

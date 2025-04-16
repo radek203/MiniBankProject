@@ -2,6 +2,7 @@ package me.radek203.branchservice.service.impl.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import me.radek203.branchservice.config.AppProperties;
@@ -24,6 +25,10 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final AppProperties appProperties;
     private final Map<String, KafkaTopicErrorHandler> handlers = new HashMap<>();
+
+    {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
     @PostConstruct
     public void addHandlers() {

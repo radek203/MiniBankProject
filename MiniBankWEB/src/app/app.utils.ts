@@ -92,6 +92,10 @@ function getErrorText(error: string) {
             return "Address is invalid. Please check the address.";
         case "error/client-city-size":
             return "City is invalid. Please check the city.";
+        case "error/avatar-invalid-url":
+            return "Avatar is invalid. Please check the avatar url.";
+        case "error/server-error":
+            return "Server error. Please notify administrator!.";
     }
     return "Undefined error occurred";
 }

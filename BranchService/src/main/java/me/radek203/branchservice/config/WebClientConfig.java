@@ -17,6 +17,8 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 /**
  * WebClientConfig is a configuration class that sets up WebClient instances for making HTTP requests
  * to external services. It also provides error handling for the responses.
@@ -65,6 +67,10 @@ public class WebClientConfig {
                 return clientResponse
                         .bodyToMono(String.class)
                         .flatMap(errorBody -> {
+                            if (clientResponse.statusCode().is5xxServerError()) {
+                                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "error/server-error", "", "", "");
+                                return Mono.error(new ClientException(errorDetails, clientResponse.statusCode()));
+                            }
                             ErrorDetails errorDetails;
                             try {
                                 errorDetails = objectMapper.readValue(errorBody, ErrorDetails.class);

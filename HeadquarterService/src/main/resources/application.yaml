@@ -14,6 +14,8 @@ spring:
     username: sa
     password: MyStrongPassword123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    hikari:
+      connection-timeout: 5000
   jpa:
     database-platform: org.hibernate.dialect.SQLServerDialect
     hibernate:

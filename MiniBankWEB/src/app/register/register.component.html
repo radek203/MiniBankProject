@@ -2,63 +2,35 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="registrationForm" aria-label="Registration form">
     <div class="form-group">
         <label for="email">Email</label>
-        <input
-            [attr.aria-invalid]="submitted && registrationForm.controls['email'].invalid"
-            aria-required="true"
-            class="form-control"
-            formControlName="email"
-            id="email"
-            type="email"
-        />
-        <div *ngIf="submitted && registrationForm.controls['email'].invalid" class="error">
+        <input class="form-control" formControlName="email" id="email" type="email"/>
+        <div *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched" class="error">
             Email is required and must be a valid email address.
         </div>
     </div>
 
     <div class="form-group">
-        <label for="avatar">Avatar</label>
-        <input
-            [attr.aria-invalid]="submitted && registrationForm.controls['avatar'].invalid"
-            aria-required="true"
-            class="form-control"
-            formControlName="avatar"
-            id="avatar"
-            type="text"
-        />
-        <div *ngIf="submitted && registrationForm.controls['avatar'].invalid" class="error">
+        <label for="avatar">Avatar (URL)</label>
+        <input class="form-control" formControlName="avatar" id="avatar" type="text"/>
+        <div *ngIf="registrationForm.get('avatar')?.invalid && registrationForm.get('avatar')?.touched" class="error">
             Avatar is required.
         </div>
     </div>
 
     <div class="form-group">
         <label for="username">Username</label>
-        <input
-            [attr.aria-invalid]="submitted && registrationForm.controls['username'].invalid"
-            aria-required="true"
-            class="form-control"
-            formControlName="username"
-            id="username"
-            type="text"
-        />
-        <div *ngIf="submitted && registrationForm.controls['username'].invalid" class="error">
+        <input class="form-control" formControlName="username" id="username" type="text"/>
+        <div *ngIf="registrationForm.get('username')?.invalid && registrationForm.get('username')?.touched" class="error">
             Username is required.
         </div>
     </div>
 
     <div class="form-group">
         <label for="password">Password</label>
-        <input
-            [attr.aria-invalid]="submitted && registrationForm.controls['password'].invalid"
-            aria-required="true"
-            class="form-control"
-            formControlName="password"
-            id="password"
-            type="password"
-        />
-        <div *ngIf="submitted && registrationForm.controls['password'].invalid" class="error">
+        <input class="form-control" formControlName="password" id="password" type="password"/>
+        <div *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched" class="error">
             Password is required and must be at least 6 characters long.
         </div>
     </div>
 
-    <button class="btn btn-primary" type="submit">Register</button>
+    <button>Register</button>
 </form>

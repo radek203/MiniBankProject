@@ -19,7 +19,6 @@ import {NotificationService} from '../services/notification.service';
 export class LoginComponent implements OnInit {
 
     loginForm!: FormGroup;
-    submitted = false;
 
     constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private notificationService: NotificationService) {
     }
@@ -32,7 +31,6 @@ export class LoginComponent implements OnInit {
     }
 
     onSubmit(): void {
-        this.submitted = true;
         if (this.loginForm.valid) {
             this.authService.postLogin(this.loginForm.value).subscribe({
                 next: (response: TokenResponse) => {
@@ -45,6 +43,8 @@ export class LoginComponent implements OnInit {
                     this.notificationService.addNotification(error);
                 }
             });
+        } else {
+            this.loginForm.markAllAsTouched();
         }
     }
 
