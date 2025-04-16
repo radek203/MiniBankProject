@@ -125,6 +125,7 @@ services:
       - sb-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_APPLICATION_NAME=branch-service-1
       - BRANCH_ID=1
       - SERVER_PORT=8082
     healthcheck:
@@ -144,6 +145,7 @@ services:
       - sb-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_APPLICATION_NAME=branch-service-2
       - BRANCH_ID=2
       - SERVER_PORT=8083
     healthcheck:

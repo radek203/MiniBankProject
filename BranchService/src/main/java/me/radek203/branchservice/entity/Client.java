@@ -21,20 +21,20 @@ public class Client {
     private UUID id;
     private ClientStatus status;
     @NotNull
-    @Size(min = 2, max = 50, message = "error/passenger-first-name-size")
+    @Size(min = 2, max = 50, message = "error/client-first-name-size")
     private String firstName;
     @NotNull
-    @Size(min = 2, max = 50, message = "error/passenger-last-name-size")
+    @Size(min = 2, max = 50, message = "error/client-last-name-size")
     private String lastName;
     private int userId;
     @NotNull
-    @Pattern(regexp = "^\\+?\\d{2,3} \\d{9,15}$", message = "error/passenger-phone-number")
+    @Pattern(regexp = "^\\+?\\d{2,3} \\d{9,15}$", message = "error/client-phone-number")
     private String phone;
     @NotNull
-    @Size(min = 2, max = 50, message = "error/passenger-address-size")
+    @Size(min = 2, max = 50, message = "error/client-address-size")
     private String address;
     @NotNull
-    @Size(min = 2, max = 50, message = "error/passenger-city-size")
+    @Size(min = 2, max = 50, message = "error/client-city-size")
     private String city;
 
     private int branch;

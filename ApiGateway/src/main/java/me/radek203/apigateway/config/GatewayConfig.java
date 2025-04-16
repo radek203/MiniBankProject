@@ -27,13 +27,13 @@ public class GatewayConfig {
                                 .rewritePath("/krakow/transfer/(?<segment>.*)", "/transfer/${segment}")
                                 .rewritePath("/krakow/account/(?<segment>.*)", "/account/${segment}")
                         )
-                        .uri("http://localhost:8082"))
+                        .uri("lb://branch-service-1"))
                 .route(r -> r.path("/warsaw/transfer/**", "/warsaw/account/**")
                         .filters(f -> f
                                 .rewritePath("/warsaw/transfer/(?<segment>.*)", "/transfer/${segment}")
                                 .rewritePath("/warsaw/account/(?<segment>.*)", "/account/${segment}")
                         )
-                        .uri("http://localhost:8083"))
+                        .uri("lb://branch-service-2"))
                 .build();
     }
 
