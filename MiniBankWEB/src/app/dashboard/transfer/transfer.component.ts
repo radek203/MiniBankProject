@@ -46,15 +46,17 @@ export class TransferComponent implements OnInit {
 
     sendTransfer(): void {
         if (this.transferForm.valid) {
-            const account = this.transferForm.value['fromAccount'];
-            this.accountService.makeTransfer(account, this.transferForm.value['toAccount'].replaceAll(" ", ""), this.transferForm.value['amount']).subscribe({
+            const fromAccount = this.transferForm.value['fromAccount'];
+            const toAccount = this.transferForm.value['toAccount'].replaceAll(" ", "");
+            this.accountService.makeTransfer(fromAccount, toAccount, this.transferForm.value['amount']).subscribe({
                 next: (response) => {
                     this.transferForm.reset();
                     setTimeout(() => {
-                        this.accountService.getTransfer(account, response.id).subscribe({
+                        this.accountService.getTransfer(fromAccount, response.id).subscribe({
                             next: (response) => {
                                 if (response.status === TransferStatus.COMPLETED) {
-                                    this.accountService.loadAccounts(this.authService.user.id);
+                                    this.accountService.loadSingleAccountByAccountNumber(fromAccount);
+                                    this.accountService.loadSingleAccountByAccountNumber(toAccount);
                                     this.notificationService.clearNotifications();
                                 }
                             },

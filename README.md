@@ -32,6 +32,7 @@ To run frontend (in the easiest way) navigate to `MiniBankWEB` directory:
 Then install dependencies and run the application:
 
 ```bash
+  npm install -g @angular/cli
   npm install
   ng serve
 ```

@@ -42,7 +42,7 @@ export class WithdrawComponent {
                         this.accountService.getBalanceChange(account, response.id).subscribe({
                             next: (response) => {
                                 if (response.status === BalanceChangeStatus.COMPLETED) {
-                                    this.accountService.loadAccounts(this.authService.user.id);
+                                    this.accountService.loadSingleAccountByAccountNumber(account);
                                     this.notificationService.clearNotifications();
                                 }
                             },

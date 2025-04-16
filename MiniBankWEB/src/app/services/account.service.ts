@@ -37,12 +37,24 @@ export class AccountService {
     loadSingleAccount(client: Client) {
         this.httpService.get<Client>(getBranchUrl(client.branch) + '/account/' + client.id).subscribe({
             next: (response) => {
-                this.accounts.push(response);
+                const existingIndex = this.accounts.findIndex(account => account.id === response.id);
+                if (existingIndex !== -1) {
+                    this.accounts[existingIndex] = response;
+                } else {
+                    this.accounts.push(response);
+                }
             },
             error: (error) => {
                 console.error('Error fetching account:', error);
             }
         });
+    }
+
+    loadSingleAccountByAccountNumber(accountNumber: string) {
+        const client = this.getOwnerByAccountNumber(accountNumber);
+        if (client) {
+            this.loadSingleAccount(client);
+        }
     }
 
     createAccount(client: Client) {
