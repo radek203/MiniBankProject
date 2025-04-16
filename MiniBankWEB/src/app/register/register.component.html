@@ -16,6 +16,21 @@
     </div>
 
     <div class="form-group">
+        <label for="avatar">Avatar</label>
+        <input
+            [attr.aria-invalid]="submitted && registrationForm.controls['avatar'].invalid"
+            aria-required="true"
+            class="form-control"
+            formControlName="avatar"
+            id="avatar"
+            type="text"
+        />
+        <div *ngIf="submitted && registrationForm.controls['avatar'].invalid" class="error">
+            Avatar is required.
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="username">Username</label>
         <input
             [attr.aria-invalid]="submitted && registrationForm.controls['username'].invalid"

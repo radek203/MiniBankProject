@@ -23,7 +23,7 @@
         </nav>
         @if (authService.isAuth) {
             <div class="profile">
-                <img src="https://avatars.githubusercontent.com/u/57212337?v=4" alt="Profile Picture"
+                <img src="{{ authService.user.avatar }}" alt="Profile Picture"
                      class="profile-picture">
                 <div class="profile-data">
                     <div class="profile-email"><span class="nav-hidden">{{ authService.user.email }}</span></div>

@@ -23,6 +23,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
+    private static final String AVATAR = "https://avatars.githubusercontent.com/u/57212337?v=4";
+
     @Mock
     private UserRepository userRepository;
 
@@ -33,7 +35,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(1, "user123", "password", "email@example.com", Role.USER, null);
+        user = new User(1, "user123", "password", "email@example.com", AVATAR, Role.USER, null);
     }
 
     @Test

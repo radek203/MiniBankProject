@@ -20,5 +20,7 @@ public class UserUpdateDTO {
     private String password;
     @NotNull(message = "error/email-required")
     private String email;
+    @NotNull(message = "error/avatar-required")
+    private String avatar;
 
 }

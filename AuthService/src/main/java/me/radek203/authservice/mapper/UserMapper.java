@@ -27,7 +27,7 @@ public class UserMapper {
      * @return a UserDTO object containing the user's information
      */
     public static UserDTO mapUserToUserDTO(final User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRole(), user.getCreatedAt());
+        return new UserDTO(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getAvatar(), user.getRole(), user.getCreatedAt());
     }
 
     /**
@@ -37,7 +37,7 @@ public class UserMapper {
      * @return a User entity containing the user's information
      */
     public static User mapUserDTOToUser(final UserDTO userDTO) {
-        return new User(userDTO.getId(), userDTO.getUsername(), userDTO.getPassword(), userDTO.getEmail(), userDTO.getRole(), userDTO.getCreatedAt());
+        return new User(userDTO.getId(), userDTO.getUsername(), userDTO.getPassword(), userDTO.getEmail(), userDTO.getAvatar(), userDTO.getRole(), userDTO.getCreatedAt());
     }
 
 }

@@ -22,6 +22,8 @@ public class UserDTO {
     private String password;
     @NotNull(message = "error/email-required")
     private String email;
+    @NotNull(message = "error/avatar-required")
+    private String avatar;
     private Role role;
     private LocalDateTime createdAt;
 

@@ -23,6 +23,7 @@ export class SettingsComponent {
         this.userForm = this.fb.group({
             email: [this.authService.user.email, [Validators.required, Validators.email]],
             username: [this.authService.user.username, [Validators.required, Validators.minLength(3)]],
+            avatar: [this.authService.user.avatar, [Validators.required]],
             oldPassword: ['', [Validators.required, Validators.minLength(6)]],
             password: ['', [Validators.required, Validators.minLength(6)]]
         });
@@ -31,7 +32,7 @@ export class SettingsComponent {
     submitForm(): void {
         if (this.userForm.valid) {
             this.authService.updateUser(this.authService.user.id, {
-                username: this.userForm.value['username'], email: this.userForm.value['email'],
+                username: this.userForm.value['username'], email: this.userForm.value['email'], avatar: this.userForm.value['avatar'],
                 oldPassword: this.userForm.value['oldPassword'], password: this.userForm.value['password']
             }).subscribe({
                 next: (response) => {

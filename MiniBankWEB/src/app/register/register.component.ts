@@ -4,6 +4,7 @@ import {NgIf} from '@angular/common';
 import {AuthService} from '../services/auth.service';
 import {User} from '../models/user.model';
 import {NotificationService} from '../services/notification.service';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-register',
@@ -19,7 +20,7 @@ export class RegisterComponent implements OnInit {
     registrationForm!: FormGroup;
     submitted = false;
 
-    constructor(private fb: FormBuilder, private authService: AuthService, private notificationService: NotificationService) {
+    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private notificationService: NotificationService) {
     }
 
     ngOnInit(): void {
@@ -27,6 +28,10 @@ export class RegisterComponent implements OnInit {
             email: [
                 '',
                 [Validators.required, Validators.email]
+            ],
+            avatar: [
+                '',
+                [Validators.required]
             ],
             username: [
                 '',
@@ -45,6 +50,7 @@ export class RegisterComponent implements OnInit {
             this.authService.postRegistration(this.registrationForm.value).subscribe({
                 next: (response: User) => {
                     this.notificationService.clearNotifications();
+                    this.router.navigate(["/login"]);
                 },
                 error: (error) => {
                     this.notificationService.addNotification(error);

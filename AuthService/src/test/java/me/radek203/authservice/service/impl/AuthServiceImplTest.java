@@ -32,6 +32,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceImplTest {
 
+    private static final String AVATAR = "https://avatars.githubusercontent.com/u/57212337?v=4";
+
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -46,8 +48,8 @@ class AuthServiceImplTest {
 
     @Test
     void createUser_shouldCreateNewUserWhenUsernameIsAvailable() {
-        UserDTO userDTO = new UserDTO(null, "user", "pass", "user@mail.com", null, null);
-        User user = new User(null, "user", "encoded", "user@mail.com", Role.USER, LocalDateTime.now());
+        UserDTO userDTO = new UserDTO(null, "user", "pass", "user@mail.com", AVATAR, null, null);
+        User user = new User(null, "user", "encoded", "user@mail.com", AVATAR, Role.USER, LocalDateTime.now());
 
         when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("pass")).thenReturn("encoded");
@@ -62,7 +64,7 @@ class AuthServiceImplTest {
 
     @Test
     void createUser_shouldThrowWhenUsernameAlreadyExists() {
-        UserDTO userDTO = new UserDTO(null, "user", "pass", "user@mail.com", null, null);
+        UserDTO userDTO = new UserDTO(null, "user", "pass", "user@mail.com", AVATAR, null, null);
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(new User()));
 
         assertThrows(ResourceAlreadyExistsException.class, () -> authService.createUser(userDTO));
@@ -71,7 +73,7 @@ class AuthServiceImplTest {
     @Test
     void authenticateUserWithLoginDTO_shouldReturnTokenWhenValid() {
         LoginDTO loginDTO = new LoginDTO("user", "pass");
-        User user = new User(1, "user", "encoded", "mail", Role.USER, LocalDateTime.now());
+        User user = new User(1, "user", "encoded", "mail", AVATAR, Role.USER, LocalDateTime.now());
 
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
         when(jwtService.generateToken("user")).thenReturn("token");
@@ -85,7 +87,7 @@ class AuthServiceImplTest {
     @Test
     void authenticateUserWithToken_shouldReturnNewTokenWhenValid() {
         JWTAuthentication token = new JWTAuthentication("token");
-        User user = new User(1, "user", "encoded", "mail", Role.USER, LocalDateTime.now());
+        User user = new User(1, "user", "encoded", "mail", AVATAR, Role.USER, LocalDateTime.now());
 
         when(jwtService.getUsername("token")).thenReturn("user");
         when(jwtService.isTokenValid("token", "user")).thenReturn(true);
@@ -110,7 +112,7 @@ class AuthServiceImplTest {
     @Test
     void validateToken_shouldReturnUserWhenValid() {
         JWTAuthentication token = new JWTAuthentication("token");
-        User user = new User(1, "user", "encoded", "mail", Role.USER, LocalDateTime.now());
+        User user = new User(1, "user", "encoded", "mail", AVATAR, Role.USER, LocalDateTime.now());
 
         when(jwtService.getUsername("token")).thenReturn("user");
         when(jwtService.isTokenValid("token", "user")).thenReturn(true);
@@ -133,8 +135,8 @@ class AuthServiceImplTest {
 
     @Test
     void updateUser_shouldUpdateWhenPasswordValid() {
-        UserUpdateDTO update = new UserUpdateDTO("new", "old", "newpass", "mail");
-        User user = new User(1, "user", "old", "mail", Role.USER, LocalDateTime.now());
+        UserUpdateDTO update = new UserUpdateDTO("new", "old", "newpass", "mail", AVATAR);
+        User user = new User(1, "user", "old", "mail", AVATAR, Role.USER, LocalDateTime.now());
 
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
@@ -160,11 +162,11 @@ class AuthServiceImplTest {
 
     @Test
     void updateUser_shouldThrowWhenPasswordInvalid() {
-        User user = new User(1, "user", "enc", "mail", Role.USER, LocalDateTime.now());
+        User user = new User(1, "user", "enc", "mail", AVATAR, Role.USER, LocalDateTime.now());
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         doThrow(BadCredentialsException.class).when(authenticationManager).authenticate(any());
 
         assertThrows(ResourceInvalidException.class, () ->
-                authService.updateUser(1, new UserUpdateDTO("user", "wrong", "pass", "mail")));
+                authService.updateUser(1, new UserUpdateDTO("user", "wrong", "pass", "mail", AVATAR)));
     }
 }

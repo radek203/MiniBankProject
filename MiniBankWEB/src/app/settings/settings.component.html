@@ -22,6 +22,17 @@
         Username must be at least 3 characters long.
     </div>
 
+    <label for="avatar">Avatar:</label>
+    <input
+        formControlName="avatar"
+        id="avatar"
+        placeholder="Enter your avatar url"
+        type="text"
+    />
+    <div *ngIf="userForm.get('avatar')?.invalid && userForm.get('avatar')?.touched" class="error">
+        Avatar must be at least 3 characters long.
+    </div>
+
     <label for="oldPassword">Old Password:</label>
     <input
         formControlName="oldPassword"

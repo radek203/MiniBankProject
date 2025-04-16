@@ -4,9 +4,8 @@ import {Router} from "@angular/router";
 import {Login} from "../models/login.model";
 import {TokenResponse} from "../models/token.model";
 import {Registration} from "../models/registration.model";
-import {emptyUser, User} from "../models/user.model";
+import {emptyUser, User, UserUpdate} from "../models/user.model";
 import {Subject} from "rxjs";
-import {UserUpdate} from '../models/user-update.model';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
