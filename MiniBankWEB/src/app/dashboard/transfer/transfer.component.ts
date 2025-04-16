@@ -51,20 +51,7 @@ export class TransferComponent implements OnInit {
             this.accountService.makeTransfer(fromAccount, toAccount, this.transferForm.value['amount']).subscribe({
                 next: (response) => {
                     this.transferForm.reset();
-                    setTimeout(() => {
-                        this.accountService.getTransfer(fromAccount, response.id).subscribe({
-                            next: (response) => {
-                                if (response.status === TransferStatus.COMPLETED) {
-                                    this.accountService.loadSingleAccountByAccountNumber(fromAccount);
-                                    this.accountService.loadSingleAccountByAccountNumber(toAccount);
-                                    this.notificationService.clearNotifications();
-                                }
-                            },
-                            error: (error) => {
-                                this.notificationService.addNotification(error);
-                            }
-                        });
-                    }, 1000);
+                    this.checkTransfer(fromAccount, toAccount, response.id, 1);
                 },
                 error: (error) => {
                     this.notificationService.addNotification(error);
@@ -73,6 +60,28 @@ export class TransferComponent implements OnInit {
         } else {
             this.transferForm.markAllAsTouched();
         }
+    }
+
+    checkTransfer(fromAccount: string, toAccount: string, transferId: string, attempt: number) {
+        if (attempt > 3) {
+            return;
+        }
+        setTimeout(() => {
+            this.accountService.getTransfer(fromAccount, transferId).subscribe({
+                next: (response) => {
+                    if (response.status === TransferStatus.COMPLETED) {
+                        this.accountService.loadSingleAccountByAccountNumber(fromAccount);
+                        this.accountService.loadSingleAccountByAccountNumber(toAccount);
+                        this.notificationService.clearNotifications();
+                    } else {
+                        this.checkTransfer(fromAccount, toAccount, transferId, attempt + 1);
+                    }
+                },
+                error: (error) => {
+                    this.notificationService.addNotification(error);
+                }
+            });
+        }, 1000);
     }
 
 }
