@@ -1,3 +1,10 @@
+# MiniBankProject
+
+As a project, a system was developed to simulate a distributed banking system with a central customer database and bank branches,
+each having its own local database where banking transactions are also recorded.
+The goal of the project was to develop a library that enables communication with distributed SQL Server databases and manages transactions.
+An additional assumption was that the databases are unaware of each other; to make things more challenging, all distributed processing is implemented using microservices.
+
 ## Technologies used
 
 - Java 21

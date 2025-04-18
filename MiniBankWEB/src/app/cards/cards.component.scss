@@ -1,5 +1,5 @@
 :root {
-    --glitter: url("https://assets.codepen.io/13471/silver-glitter-background.png");
+    --glitter: url(../../../public/img/silver-glitter-background.png);
     --duration: 14s;
 }
 
@@ -42,7 +42,7 @@ form {
 
     border-radius: 3.5% 3.5% 3.5% 3.5% / 5% 5% 5% 5%;
 
-    background-image: url(https://simey-credit-card.netlify.app/img/bgs/default.jpg);
+    background-image: url(../../../public/img/default.jpg);
     background-size: cover;
 
     box-shadow: 0 20px 50px -10px rgba(43, 27, 92, 0.8);

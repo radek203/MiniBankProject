@@ -32,7 +32,7 @@
               }
             ],
             "styles": [
-                "src/styles.scss", "src/fonts.scss", "src/grid.scss", "src/icons.scss", "src/normalize.scss"
+                "src/styles.scss", "src/external/fonts.scss", "src/external/grid.scss", "src/external/icons.scss", "src/external/normalize.scss"
             ],
             "scripts": []
           },
@@ -91,7 +91,7 @@
               }
             ],
             "styles": [
-                "src/styles.scss", "src/fonts.scss", "src/grid.scss", "src/icons.scss", "src/normalize.scss"
+                "src/styles.scss", "src/external/fonts.scss", "src/external/grid.scss", "src/external/icons.scss", "src/external/normalize.scss"
             ],
             "scripts": []
           }
