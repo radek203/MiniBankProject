@@ -11,6 +11,7 @@
 html {
     background-color: var(--bg-color);
     color: var(--main-font-color);
+    scrollbar-gutter: stable both-edges;
 
     font-family: "Space Grotesk", sans-serif;
     font-optical-sizing: auto;
