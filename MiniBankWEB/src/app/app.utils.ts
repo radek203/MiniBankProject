@@ -95,7 +95,7 @@ function getErrorText(error: string) {
         case "error/avatar-invalid-url":
             return "Avatar is invalid. Please check the avatar url.";
         case "error/server-error":
-            return "Server error. Please notify administrator!.";
+            return "Server error. Please notify administrator!";
     }
     return "Undefined error occurred";
 }

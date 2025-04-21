@@ -23,23 +23,23 @@ public class CreditCardController {
     private final CreditCardService creditCardService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<CreditCard>> getCreditCards(@PathVariable int userId) {
-        return ResponseEntity.ok(creditCardService.getCreditCards(userId));
+    public ResponseEntity<List<CreditCard>> getCreditCards(@PathVariable int userId, @RequestHeader("X-UserId") int userIdHeader) {
+        return ResponseEntity.ok(creditCardService.getCreditCards(userId, userIdHeader));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Bank> createBank(@RequestBody Bank bank) {
-        return ResponseEntity.ok(creditCardService.createBank(bank));
+    public ResponseEntity<Bank> createBank(@RequestBody Bank bank, @RequestHeader("X-Role") String userRole) {
+        return ResponseEntity.ok(creditCardService.createBank(bank, userRole));
     }
 
     @PostMapping("/create/{bank}/{account}")
-    public ResponseEntity<CreditCard> createCreditCard(@PathVariable int bank, @PathVariable String account) {
+    public ResponseEntity<CreditCard> createCreditCard(@PathVariable int bank, @PathVariable String account, @RequestHeader("X-Internal-Auth") String internalAuth) {
         return ResponseEntity.ok(creditCardService.createCreditCard(bank, account));
     }
 
-    @DeleteMapping("/delete/{number}")
-    public ResponseEntity<Void> deleteCreditCard(@PathVariable String number) {
-        creditCardService.deleteCreditCard(number);
+    @DeleteMapping("/delete/{number}/{userId}")
+    public ResponseEntity<Void> deleteCreditCard(@PathVariable String number, @PathVariable int userId, @RequestHeader("X-Internal-Auth") String internalAuth) {
+        creditCardService.deleteCreditCard(number, userId);
         return ResponseEntity.noContent().build();
     }
 

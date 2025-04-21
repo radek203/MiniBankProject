@@ -28,8 +28,8 @@ export class CardsService {
         return this.httpService.post<CreditCard>(getBranchUrl(client.branch) + '/account/create/card/' + client.accountNumber, {});
     }
 
-    deleteCard(cardNumber: string) {
-        return this.httpService.delete('creditcard/delete/' + cardNumber);
+    deleteCard(client: Client, cardNumber: string) {
+        return this.httpService.delete(getBranchUrl(client.branch) + '/account/delete/card/' + cardNumber);
     }
 
     payByCard(cardNumber: string, date: string, cvv: string, service: string, amount: number) {

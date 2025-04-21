@@ -29,14 +29,19 @@ public class PaymentServiceImpl implements PaymentService {
     private final AppProperties appProperties;
     private final HeadquarterClient hqClient;
 
+    private Client getClientByAccountAndUserId(String account, int userId) {
+        return clientRepository.findByAccountNumberAndUserId(account, userId).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
+    }
+
     @Override
-    public Transfer getTransfer(UUID id) {
+    public Transfer getTransfer(String account, UUID id, int userId) {
+        getClientByAccountAndUserId(account, userId);
         return transferRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/transfer-not-found", String.valueOf(id)));
     }
 
     @Override
     @Transactional
-    public Transfer makeTransfer(String fromAccount, String toAccount, double amount) {
+    public Transfer makeTransfer(String fromAccount, String toAccount, double amount, int userId) {
         if (amount <= 0) {
             throw new ResourceInvalidException("error/invalid-amount");
         }
@@ -44,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new ResourceInvalidException("error/invalid-account");
         }
 
-        Client fromClient = clientRepository.findByAccountNumber(fromAccount).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", fromAccount));
+        Client fromClient = getClientByAccountAndUserId(fromAccount, userId);
 
         if (fromClient.getBalance() < amount) {
             throw new ResourceInvalidException("error/insufficient-balance");
@@ -79,11 +84,13 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public Transfer makePaymentTransfer(String fromAccount, UUID service, double amount) {
         String toAccount = hqClient.getResponse("error/invalid-account", hqClient::getAccountNumber, service);
-        return makeTransfer(fromAccount, toAccount, amount);
+        Client fromClient = clientRepository.findByAccountNumber(fromAccount).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
+        return makeTransfer(fromAccount, toAccount, amount, fromClient.getUserId());
     }
 
     @Override
-    public List<Transfer> getTransfersByAccount(String account) {
+    public List<Transfer> getTransfersByAccount(String account, int userId) {
+        getClientByAccountAndUserId(account, userId);
         return transferRepository.findAllByFromAccountOrToAccount(account, account);
     }
 
@@ -165,14 +172,15 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public BalanceChange getBalanceChange(UUID id) {
+    public BalanceChange getBalanceChange(String account, UUID id, int userId) {
+        getClientByAccountAndUserId(account, userId);
         return balanceChangeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/balance-change-not-found", String.valueOf(id)));
     }
 
     @Override
     @Transactional
-    public BalanceChange makeDeposit(String account, double amount) {
-        Client client = clientRepository.findByAccountNumber(account).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
+    public BalanceChange makeDeposit(String account, double amount, int userId) {
+        Client client = getClientByAccountAndUserId(account, userId);
 
         client.setBalanceReserved(client.getBalanceReserved() - amount);
         clientRepository.save(client);
@@ -187,8 +195,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public BalanceChange makeWithdraw(String account, double amount) {
-        Client client = clientRepository.findByAccountNumber(account).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
+    public BalanceChange makeWithdraw(String account, double amount, int userId) {
+        Client client = getClientByAccountAndUserId(account, userId);
 
         if (client.getBalance() < amount) {
             throw new ResourceInvalidException("error/insufficient-balance");
@@ -207,7 +215,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<BalanceChange> getBalanceChanges(String account) {
+    public List<BalanceChange> getBalanceChanges(String account, int userId) {
+        getClientByAccountAndUserId(account, userId);
         return balanceChangeRepository.getBalanceChangesByAccount(account);
     }
 

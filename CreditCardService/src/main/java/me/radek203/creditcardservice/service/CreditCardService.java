@@ -12,18 +12,20 @@ public interface CreditCardService {
     /**
      * Retrieves a list of CreditCards associated with a specific user.
      *
-     * @param userId the ID of the user
+     * @param userId       the ID of the user
+     * @param userIdHeader the ID of the user from the header
      * @return a list of CreditCards associated with the user
      */
-    List<CreditCard> getCreditCards(int userId);
+    List<CreditCard> getCreditCards(int userId, int userIdHeader);
 
     /**
      * Creates a new Bank entity.
      *
-     * @param bank the Bank entity to be created
+     * @param bank     the Bank entity to be created
+     * @param userRole the Role of user
      * @return the created Bank entity
      */
-    Bank createBank(Bank bank);
+    Bank createBank(Bank bank, String userRole);
 
     /**
      * Creates a new CreditCard for a specific bank and account.
@@ -38,8 +40,9 @@ public interface CreditCardService {
      * Deletes a CreditCard based on its number.
      *
      * @param cardNumber the number of the CreditCard to be deleted
+     * @param userId     the ID of the user
      */
-    void deleteCreditCard(String cardNumber);
+    void deleteCreditCard(String cardNumber, int userId);
 
     /**
      * Makes a payment using the specified CreditCard details.

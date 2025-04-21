@@ -54,13 +54,19 @@ public class CreditCardServiceImpl implements CreditCardService {
     }
 
     @Override
-    public List<CreditCard> getCreditCards(int userId) {
+    public List<CreditCard> getCreditCards(int userId, int userIdHeader) {
+        if (userId != userIdHeader) {
+            throw new ResourceNotFoundException("error/card-not-found");
+        }
         List<String> accounts = hqClient.getResponse("error/accounts-not-found", hqClient::getAccountsByUserId, userId);
         return creditCardRepository.findAllByAccountNumberIn(accounts);
     }
 
     @Override
-    public Bank createBank(Bank bank) {
+    public Bank createBank(Bank bank, String userRole) {
+        if (!userRole.equals("ADMIN")) {
+            throw new ResourceInvalidException("error/invalid-role");
+        }
         bank.setBankId(null);
         return bankRepository.save(bank);
     }
@@ -78,8 +84,12 @@ public class CreditCardServiceImpl implements CreditCardService {
     }
 
     @Override
-    public void deleteCreditCard(String cardNumber) {
+    public void deleteCreditCard(String cardNumber, int userId) {
         CreditCard creditCard = creditCardRepository.findByCardNumber(cardNumber).orElseThrow(() -> new ResourceNotFoundException("error/card-not-found"));
+        List<String> accounts = hqClient.getResponse("error/accounts-not-found", hqClient::getAccountsByUserId, userId);
+        if (!accounts.contains(creditCard.getAccountNumber())) {
+            throw new ResourceNotFoundException("error/card-not-found");
+        }
         creditCardRepository.delete(creditCard);
     }
 

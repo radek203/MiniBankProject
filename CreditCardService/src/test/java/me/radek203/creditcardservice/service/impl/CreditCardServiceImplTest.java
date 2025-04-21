@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -54,15 +53,15 @@ class CreditCardServiceImplTest {
                 new CreditCard("1111222233334444", "123", "12/25", "123", new Bank())
         );
 
-        Mockito.when(headquarterClient.getResponse(
-                        Mockito.eq("error/accounts-not-found"),
-                        Mockito.any(),
-                        Mockito.eq(userId)))
+        when(headquarterClient.getResponse(
+                eq("error/accounts-not-found"),
+                any(),
+                eq(userId)))
                 .thenReturn(accountNumbers);
-        Mockito.when(creditCardRepository.findAllByAccountNumberIn(accountNumbers))
+        when(creditCardRepository.findAllByAccountNumberIn(accountNumbers))
                 .thenReturn(cards);
 
-        List<CreditCard> result = creditCardService.getCreditCards(userId);
+        List<CreditCard> result = creditCardService.getCreditCards(userId, userId);
 
         assertEquals(1, result.size());
         assertEquals("123", result.get(0).getAccountNumber());
@@ -72,13 +71,13 @@ class CreditCardServiceImplTest {
     void shouldThrow_whenAccountsNotFound() {
         int userId = 1;
 
-        Mockito.when(headquarterClient.getResponse(
-                        Mockito.eq("error/accounts-not-found"),
-                        Mockito.any(),
-                        Mockito.eq(userId)))
+        when(headquarterClient.getResponse(
+                eq("error/accounts-not-found"),
+                any(),
+                eq(userId)))
                 .thenThrow(new ClientException(new ErrorDetails(), HttpStatus.NOT_FOUND));
 
-        assertThrows(ClientException.class, () -> creditCardService.getCreditCards(userId));
+        assertThrows(ClientException.class, () -> creditCardService.getCreditCards(userId, userId));
     }
 
     @Test
@@ -91,9 +90,9 @@ class CreditCardServiceImplTest {
         saved.setBankId(1L);
         saved.setName("Test Bank");
 
-        Mockito.when(bankRepository.save(any(Bank.class))).thenReturn(saved);
+        when(bankRepository.save(any(Bank.class))).thenReturn(saved);
 
-        Bank result = creditCardService.createBank(bank);
+        Bank result = creditCardService.createBank(bank, "ADMIN");
 
         assertNotNull(result.getBankId());
         assertEquals("Test Bank", result.getName());
@@ -102,9 +101,9 @@ class CreditCardServiceImplTest {
     @Test
     void shouldCreateCreditCardWithGeneratedData() {
         Bank bank = new Bank(1L, "Test", "http://test-bank");
-        Mockito.when(bankRepository.findById(1L)).thenReturn(Optional.of(bank));
-        Mockito.when(creditCardRepository.getAllNumbers()).thenReturn(List.of());
-        Mockito.when(creditCardRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(bankRepository.findById(1L)).thenReturn(Optional.of(bank));
+        when(creditCardRepository.getAllNumbers()).thenReturn(List.of());
+        when(creditCardRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         CreditCard result = creditCardService.createCreditCard(1, "123456");
 
@@ -116,28 +115,35 @@ class CreditCardServiceImplTest {
 
     @Test
     void shouldThrowWhenBankNotFound() {
-        Mockito.when(bankRepository.findById(1L)).thenReturn(Optional.empty());
+        when(bankRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> creditCardService.createCreditCard(1, "acc"));
     }
 
     @Test
     void shouldDeleteExistingCard() {
-        CreditCard card = new CreditCard("1111222233334444", "acc", "12/25", "123", new Bank());
+        String accountNumber = "123456789";
+        CreditCard card = new CreditCard("1111222233334444", accountNumber, "12/25", "123", new Bank());
 
-        Mockito.when(creditCardRepository.findByCardNumber("1111222233334444"))
+        when(creditCardRepository.findByCardNumber("1111222233334444"))
                 .thenReturn(Optional.of(card));
 
-        creditCardService.deleteCreditCard("1111222233334444");
+        when(headquarterClient.getResponse(
+                eq("error/accounts-not-found"),
+                any(),
+                eq(1)))
+                .thenReturn(List.of(accountNumber));
 
-        Mockito.verify(creditCardRepository).delete(card);
+        creditCardService.deleteCreditCard("1111222233334444", 1);
+
+        verify(creditCardRepository).delete(card);
     }
 
     @Test
     void shouldThrowWhenCardToDeleteNotFound() {
-        Mockito.when(creditCardRepository.findByCardNumber("notfound")).thenReturn(Optional.empty());
+        when(creditCardRepository.findByCardNumber("notfound")).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> creditCardService.deleteCreditCard("notfound"));
+        assertThrows(ResourceNotFoundException.class, () -> creditCardService.deleteCreditCard("notfound", 0));
     }
 
     @Test
@@ -186,7 +192,7 @@ class CreditCardServiceImplTest {
     void shouldThrowInvalidCvv() {
         CreditCard card = new CreditCard("1234", "acc", "12/25", "000", new Bank());
 
-        Mockito.when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
+        when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
 
         assertThrows(ResourceInvalidException.class, () ->
                 creditCardService.makePayment("1234", "1225", "123", UUID.randomUUID(), 10.0));
@@ -196,7 +202,7 @@ class CreditCardServiceImplTest {
     void shouldThrowInvalidDate() {
         CreditCard card = new CreditCard("1234", "acc", "12/25", "123", new Bank());
 
-        Mockito.when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
+        when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
 
         assertThrows(ResourceInvalidException.class, () ->
                 creditCardService.makePayment("1234", "1224", "123", UUID.randomUUID(), 10.0));
@@ -206,7 +212,7 @@ class CreditCardServiceImplTest {
     void shouldThrowWhenCardExpired() {
         CreditCard card = new CreditCard("1234", "acc", "01/22", "123", new Bank());
 
-        Mockito.when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
+        when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
 
         assertThrows(ResourceInvalidException.class, () ->
                 creditCardService.makePayment("1234", "0122", "123", UUID.randomUUID(), 10.0));
@@ -216,9 +222,9 @@ class CreditCardServiceImplTest {
     void shouldThrowWhenRestTemplateFails() {
         CreditCard card = new CreditCard("1234", "acc", "12/99", "123", new Bank(1L, "bank", "http://invalid-url"));
 
-        Mockito.when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
+        when(creditCardRepository.findByCardNumber("1234")).thenReturn(Optional.of(card));
 
-        Mockito.when(restTemplate.exchange(
+        when(restTemplate.exchange(
                 ArgumentMatchers.anyString(),
                 ArgumentMatchers.eq(HttpMethod.GET),
                 ArgumentMatchers.isNull(),

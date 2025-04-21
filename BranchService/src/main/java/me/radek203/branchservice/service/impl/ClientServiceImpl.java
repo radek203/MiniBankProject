@@ -27,9 +27,9 @@ public class ClientServiceImpl implements ClientService {
     private final CreditCardClient creditCardClient;
 
     /**
-     * We do not check if generated account number exists in other branches, We can do it but, for our example
+     * We do not check if the generated account number exists in other branches, We can do it but, for our example,
      * we want to show transaction compensation.
-     * The best way to do this is to use e.g. prefix or suffix for every headquarter and branch.
+     * The best way to do this is to use e.g., prefix or suffix for every headquarters and branch.
      *
      * @return random account number
      */
@@ -61,7 +61,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client updateClient(UUID id, Client client) {
-        Client clientFound = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(id)));
+        Client clientFound = clientRepository.findByIdAndUserId(id, client.getUserId()).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(id)));
         clientFound.setAddress(client.getAddress());
         clientFound.setCity(client.getCity());
         clientFound.setFirstName(client.getFirstName());
@@ -71,13 +71,19 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getClientById(UUID id) {
-        return clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(id)));
+    public Client getClientById(UUID id, int userId) {
+        return clientRepository.findByIdAndUserId(id, userId).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(id)));
     }
 
     @Override
-    public CreditCard orderCreditCard(String accountNumber) {
+    public CreditCard orderCreditCard(String accountNumber, int userId) {
+        clientRepository.findByAccountNumberAndUserId(accountNumber, userId).orElseThrow(() -> new ResourceNotFoundException("error/account-not-found", String.valueOf(accountNumber)));
         return creditCardClient.getResponse("error/credit-card-creation", creditCardClient::createCreditCard, appProperties.getBranchId(), accountNumber);
+    }
+
+    @Override
+    public void deleteCreditCard(String number, int userId) {
+        creditCardClient.getResponse("error/credit-card-deletion", creditCardClient::deleteCreditCard, number, userId);
     }
 
     @Override

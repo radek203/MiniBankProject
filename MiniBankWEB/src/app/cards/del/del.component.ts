@@ -33,9 +33,18 @@ export class DelComponent implements OnInit {
 
     deleteCard() {
         if (this.deleteForm.valid) {
-            this.cardsService.deleteCard(this.deleteForm.value['card']).subscribe({
+            const cardNumber = this.deleteForm.value['card'];
+            const card = this.cardsService.cards.find(card => card.cardNumber === cardNumber);
+            if (!card) {
+                return;
+            }
+            const client = this.accountService.getOwnerByAccountNumber(card.accountNumber);
+            if (!client) {
+                return;
+            }
+            this.cardsService.deleteCard(client, cardNumber).subscribe({
                 next: () => {
-                    this.cardsService.cards = this.cardsService.cards.filter(c => c.cardNumber !== this.deleteForm.value['card']);
+                    this.cardsService.cards = this.cardsService.cards.filter(c => c.cardNumber !== cardNumber);
                     this.deleteForm.reset();
                     this.notificationService.clearNotifications();
                 },

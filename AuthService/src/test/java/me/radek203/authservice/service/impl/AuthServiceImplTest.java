@@ -146,7 +146,7 @@ class AuthServiceImplTest {
         when(passwordEncoder.encode("newpass")).thenReturn("encoded");
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
 
-        User result = authService.updateUser(1, update);
+        User result = authService.updateUser(1, update, 1);
 
         assertEquals("new", result.getUsername());
         assertEquals("mail", result.getEmail());
@@ -157,7 +157,7 @@ class AuthServiceImplTest {
     void updateUser_shouldThrowWhenUserNotFound() {
         when(userRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> authService.updateUser(1, new UserUpdateDTO()));
+        assertThrows(ResourceNotFoundException.class, () -> authService.updateUser(1, new UserUpdateDTO(), 1));
     }
 
     @Test
@@ -167,6 +167,6 @@ class AuthServiceImplTest {
         doThrow(BadCredentialsException.class).when(authenticationManager).authenticate(any());
 
         assertThrows(ResourceInvalidException.class, () ->
-                authService.updateUser(1, new UserUpdateDTO("user", "wrong", "pass", "mail", AVATAR)));
+                authService.updateUser(1, new UserUpdateDTO("user", "wrong", "pass", "mail", AVATAR), 1));
     }
 }

@@ -43,7 +43,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> getClientsByUserId(int userId) {
+    public List<Client> getClientsByUserId(int userId, int userIdFromHeader) {
+        if (userId != userIdFromHeader) {
+            throw new ResourceNotFoundException("error/account-not-found", String.valueOf(userId));
+        }
         return clientRepository.findByUserId(userId);
     }
 

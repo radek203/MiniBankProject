@@ -44,10 +44,11 @@ public interface AuthService {
     /**
      * Updates the user information in the system.
      *
-     * @param userId the ID of the user to be updated
-     * @param user   the updated user data
+     * @param userId       the ID of the user to be updated
+     * @param user         the updated user data
+     * @param userIdHeader the ID of the user from the header
      * @return the updated user
      */
-    User updateUser(int userId, UserUpdateDTO user);
+    User updateUser(int userId, UserUpdateDTO user, int userIdHeader);
 
 }

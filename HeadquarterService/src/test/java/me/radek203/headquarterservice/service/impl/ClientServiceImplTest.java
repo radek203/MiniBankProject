@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -37,7 +36,7 @@ class ClientServiceImplTest {
         client.setId(clientId);
         client.setBranch(1);
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
 
         clientService.createClient(client);
 
@@ -52,7 +51,7 @@ class ClientServiceImplTest {
         existing.setId(clientId);
         existing.setStatus(ClientStatus.ACTIVE);
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.of(existing));
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(existing));
 
         clientService.createClient(existing);
 
@@ -85,7 +84,7 @@ class ClientServiceImplTest {
 
         when(clientRepository.findByUserId(1)).thenReturn(clients);
 
-        List<Client> result = clientService.getClientsByUserId(1);
+        List<Client> result = clientService.getClientsByUserId(1, 1);
 
         assertEquals(2, result.size());
     }
@@ -102,7 +101,7 @@ class ClientServiceImplTest {
 
         List<Client> clients = List.of(client1, client2);
 
-        Mockito.when(clientRepository.findByUserId(userId)).thenReturn(clients);
+        when(clientRepository.findByUserId(userId)).thenReturn(clients);
 
         List<String> accountNumbers = clientService.getAccountNumbersByUserId(userId);
 
@@ -115,7 +114,7 @@ class ClientServiceImplTest {
     void shouldReturnEmptyListWhenUserHasNoAccounts() {
         int userId = 100;
 
-        Mockito.when(clientRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+        when(clientRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
 
         List<String> accountNumbers = clientService.getAccountNumbersByUserId(userId);
 

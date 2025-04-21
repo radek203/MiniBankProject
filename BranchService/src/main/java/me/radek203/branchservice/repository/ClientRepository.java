@@ -20,4 +20,8 @@ public interface ClientRepository extends CrudRepository<Client, UUID> {
     List<String> getAllAccountNumbers();
 
     Optional<Client> findByAccountNumber(String accountNumber);
+
+    Optional<Client> findByIdAndUserId(UUID id, int userId);
+
+    Optional<Client> findByAccountNumberAndUserId(String accountNumber, int userId);
 }

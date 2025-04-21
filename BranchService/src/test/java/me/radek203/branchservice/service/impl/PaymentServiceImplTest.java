@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -47,6 +46,7 @@ class PaymentServiceImplTest {
         double amount = 100;
 
         Client fromClient = new Client();
+        fromClient.setUserId(1);
         fromClient.setAccountNumber(fromAccount);
         fromClient.setBalance(500);
         fromClient.setBalanceReserved(0);
@@ -56,14 +56,14 @@ class PaymentServiceImplTest {
         toClient.setBalance(200);
         toClient.setBalanceReserved(50);
 
-        Mockito.when(clientRepository.findByAccountNumber(fromAccount)).thenReturn(Optional.of(fromClient));
-        Mockito.when(clientRepository.findByAccountNumber(toAccount)).thenReturn(Optional.of(toClient));
-        Mockito.when(appProperties.getBranchId()).thenReturn(1);
-        Mockito.when(hqClient.getResponse(anyString(), any(), eq(toAccount))).thenReturn(1);
-        Mockito.when(transferRepository.save(any(Transfer.class)))
+        when(clientRepository.findByAccountNumberAndUserId(fromAccount, fromClient.getUserId())).thenReturn(Optional.of(fromClient));
+        when(clientRepository.findByAccountNumber(toAccount)).thenReturn(Optional.of(toClient));
+        when(appProperties.getBranchId()).thenReturn(1);
+        when(hqClient.getResponse(anyString(), any(), eq(toAccount))).thenReturn(1);
+        when(transferRepository.save(any(Transfer.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Transfer result = paymentService.makeTransfer(fromAccount, toAccount, amount);
+        Transfer result = paymentService.makeTransfer(fromAccount, toAccount, amount, fromClient.getUserId());
 
         assertNotNull(result);
         assertEquals(TransferStatus.STARTED, result.getStatus());
@@ -74,8 +74,8 @@ class PaymentServiceImplTest {
         assertEquals(100, fromClient.getBalanceReserved());
         assertEquals(-50, toClient.getBalanceReserved());
 
-        Mockito.verify(clientRepository, times(2)).save(any(Client.class));
-        Mockito.verify(kafkaSenderService).sendMessage(
+        verify(clientRepository, times(2)).save(any(Client.class));
+        verify(kafkaSenderService).sendMessage(
                 eq("headquarter-transfer-create"),
                 eq(result.getId().toString()),
                 eq(result)
@@ -88,12 +88,13 @@ class PaymentServiceImplTest {
         String toAccount = "222";
 
         Client fromClient = new Client();
+        fromClient.setUserId(1);
         fromClient.setAccountNumber(fromAccount);
         fromClient.setBalance(50);
-        Mockito.when(clientRepository.findByAccountNumber(fromAccount)).thenReturn(Optional.of(fromClient));
+        when(clientRepository.findByAccountNumberAndUserId(fromAccount, fromClient.getUserId())).thenReturn(Optional.of(fromClient));
 
         assertThrows(ResourceInvalidException.class, () ->
-                paymentService.makeTransfer(fromAccount, toAccount, 100)
+                paymentService.makeTransfer(fromAccount, toAccount, 100, fromClient.getUserId())
         );
     }
 
@@ -103,16 +104,17 @@ class PaymentServiceImplTest {
         double amount = 200;
 
         Client client = new Client();
+        client.setUserId(1);
         client.setAccountNumber(account);
         client.setBalance(300);
         client.setBalanceReserved(50);
 
-        Mockito.when(clientRepository.findByAccountNumber(account)).thenReturn(Optional.of(client));
-        Mockito.when(appProperties.getBranchId()).thenReturn(1);
-        Mockito.when(balanceChangeRepository.save(any(BalanceChange.class)))
+        when(clientRepository.findByAccountNumberAndUserId(account, client.getUserId())).thenReturn(Optional.of(client));
+        when(appProperties.getBranchId()).thenReturn(1);
+        when(balanceChangeRepository.save(any(BalanceChange.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        BalanceChange result = paymentService.makeDeposit(account, amount);
+        BalanceChange result = paymentService.makeDeposit(account, amount, client.getUserId());
 
         assertNotNull(result);
         assertEquals(BalanceChangeStatus.STARTED, result.getStatus());
@@ -120,8 +122,8 @@ class PaymentServiceImplTest {
 
         assertEquals(-150, client.getBalanceReserved());
 
-        Mockito.verify(clientRepository).save(client);
-        Mockito.verify(kafkaSenderService).sendMessage(
+        verify(clientRepository).save(client);
+        verify(kafkaSenderService).sendMessage(
                 eq("headquarter-balance-deposit"),
                 eq(result.getId().toString()),
                 eq(result)
@@ -134,16 +136,17 @@ class PaymentServiceImplTest {
         double amount = 150;
 
         Client client = new Client();
+        client.setUserId(1);
         client.setAccountNumber(account);
         client.setBalance(200);
         client.setBalanceReserved(0);
 
-        Mockito.when(clientRepository.findByAccountNumber(account)).thenReturn(Optional.of(client));
-        Mockito.when(appProperties.getBranchId()).thenReturn(1);
-        Mockito.when(balanceChangeRepository.save(any(BalanceChange.class)))
+        when(clientRepository.findByAccountNumberAndUserId(account, client.getUserId())).thenReturn(Optional.of(client));
+        when(appProperties.getBranchId()).thenReturn(1);
+        when(balanceChangeRepository.save(any(BalanceChange.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        BalanceChange result = paymentService.makeWithdraw(account, amount);
+        BalanceChange result = paymentService.makeWithdraw(account, amount, client.getUserId());
 
         assertNotNull(result);
         assertEquals(-amount, result.getAmount());
@@ -151,7 +154,7 @@ class PaymentServiceImplTest {
         assertEquals(50, client.getBalance());
         assertEquals(150, client.getBalanceReserved());
 
-        Mockito.verify(kafkaSenderService).sendMessage(
+        verify(kafkaSenderService).sendMessage(
                 eq("headquarter-balance-withdraw"),
                 eq(result.getId().toString()),
                 eq(result)
@@ -177,9 +180,9 @@ class PaymentServiceImplTest {
         toClient.setAccountNumber("222");
         toClient.setBalance(200);
 
-        Mockito.when(transferRepository.findById(transferId)).thenReturn(Optional.of(transfer));
-        Mockito.when(clientRepository.findByAccountNumber("111")).thenReturn(Optional.of(fromClient));
-        Mockito.when(clientRepository.findByAccountNumber("222")).thenReturn(Optional.of(toClient));
+        when(transferRepository.findById(transferId)).thenReturn(Optional.of(transfer));
+        when(clientRepository.findByAccountNumber("111")).thenReturn(Optional.of(fromClient));
+        when(clientRepository.findByAccountNumber("222")).thenReturn(Optional.of(toClient));
 
         paymentService.completedTransfer(transfer);
 
@@ -188,7 +191,7 @@ class PaymentServiceImplTest {
         assertEquals(500, fromClient.getBalance());
         assertEquals(300, toClient.getBalance());
 
-        Mockito.verify(clientRepository, times(2)).save(any(Client.class));
+        verify(clientRepository, times(2)).save(any(Client.class));
     }
 
     @Test
@@ -205,15 +208,15 @@ class PaymentServiceImplTest {
         fromClient.setBalance(350);
         fromClient.setBalanceReserved(150);
 
-        Mockito.when(transferRepository.findById(transferId)).thenReturn(Optional.of(transfer));
-        Mockito.when(clientRepository.findByAccountNumber("111")).thenReturn(Optional.of(fromClient));
+        when(transferRepository.findById(transferId)).thenReturn(Optional.of(transfer));
+        when(clientRepository.findByAccountNumber("111")).thenReturn(Optional.of(fromClient));
 
         paymentService.failedTransfer(transfer);
 
         assertEquals(0, fromClient.getBalanceReserved());
         assertEquals(500, fromClient.getBalance());
 
-        Mockito.verify(clientRepository).save(fromClient);
+        verify(clientRepository).save(fromClient);
     }
 
     @Test
@@ -230,7 +233,7 @@ class PaymentServiceImplTest {
         client.setBalance(300);
         client.setBalanceReserved(-250);
 
-        Mockito.when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
+        when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
 
         paymentService.completedBalanceChange(change);
 
@@ -238,7 +241,7 @@ class PaymentServiceImplTest {
         assertEquals(550, client.getBalance());
         assertEquals(0, client.getBalanceReserved());
 
-        Mockito.verify(clientRepository).save(client);
+        verify(clientRepository).save(client);
     }
 
     @Test
@@ -255,15 +258,15 @@ class PaymentServiceImplTest {
         client.setBalance(700);
         client.setBalanceReserved(300);
 
-        Mockito.when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
-        Mockito.when(balanceChangeRepository.findById(changeId)).thenReturn(Optional.of(change));
+        when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
+        when(balanceChangeRepository.findById(changeId)).thenReturn(Optional.of(change));
 
         paymentService.failedBalanceChange(change);
 
         assertEquals(1000, client.getBalance());
         assertEquals(0, client.getBalanceReserved());
 
-        Mockito.verify(clientRepository).save(client);
+        verify(clientRepository).save(client);
     }
 
     @Test
@@ -276,13 +279,13 @@ class PaymentServiceImplTest {
         transfer.setToAccount("222");
         transfer.setStatus(TransferStatus.STARTED);
 
-        Mockito.when(transferRepository.findById(transferId)).thenReturn(Optional.of(transfer));
-        Mockito.when(clientRepository.findByAccountNumber("111")).thenReturn(Optional.empty());
-        Mockito.when(clientRepository.findByAccountNumber("222")).thenReturn(Optional.empty());
+        when(transferRepository.findById(transferId)).thenReturn(Optional.of(transfer));
+        when(clientRepository.findByAccountNumber("111")).thenReturn(Optional.empty());
+        when(clientRepository.findByAccountNumber("222")).thenReturn(Optional.empty());
 
         paymentService.completedTransfer(transfer);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
+        verify(clientRepository, never()).save(any());
     }
 
     @Test
@@ -292,12 +295,12 @@ class PaymentServiceImplTest {
         transfer.setId(id);
         transfer.setFromAccount("111");
 
-        Mockito.when(transferRepository.findById(id)).thenReturn(Optional.empty());
+        when(transferRepository.findById(id)).thenReturn(Optional.empty());
 
         paymentService.failedTransfer(transfer);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
-        Mockito.verify(transferRepository, Mockito.never()).deleteById(Mockito.any());
+        verify(clientRepository, never()).save(any());
+        verify(transferRepository, never()).deleteById(any());
     }
 
     @Test
@@ -307,11 +310,11 @@ class PaymentServiceImplTest {
         transfer.setId(id);
         transfer.setStatus(TransferStatus.COMPLETED);
 
-        Mockito.when(transferRepository.findById(id)).thenReturn(Optional.of(transfer));
+        when(transferRepository.findById(id)).thenReturn(Optional.of(transfer));
 
         paymentService.completedTransfer(transfer);
 
-        Mockito.verify(transferRepository, Mockito.never()).save(Mockito.any());
+        verify(transferRepository, never()).save(any());
     }
 
     @Test
@@ -321,11 +324,11 @@ class PaymentServiceImplTest {
         transfer.setId(id);
         transfer.setStatus(TransferStatus.COMPLETED);
 
-        Mockito.when(transferRepository.findById(id)).thenReturn(Optional.of(transfer));
+        when(transferRepository.findById(id)).thenReturn(Optional.of(transfer));
 
         paymentService.completedTransfer(transfer);
 
-        Mockito.verify(clientRepository, never()).save(any());
+        verify(clientRepository, never()).save(any());
     }
 
     @Test
@@ -335,12 +338,12 @@ class PaymentServiceImplTest {
         balanceChange.setId(balanceChangeId);
         balanceChange.setAccount("abc123");
 
-        Mockito.when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.empty());
+        when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.empty());
 
         paymentService.completedBalanceChange(balanceChange);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
-        Mockito.verify(balanceChangeRepository, Mockito.never()).save(Mockito.any());
+        verify(clientRepository, never()).save(any());
+        verify(balanceChangeRepository, never()).save(any());
     }
 
     @Test
@@ -354,13 +357,13 @@ class PaymentServiceImplTest {
         balanceChange.setStatus(BalanceChangeStatus.COMPLETED);
         balanceChange.setAccount("abc123");
 
-        Mockito.when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
-        Mockito.when(balanceChangeRepository.findById(balanceChangeId)).thenReturn(Optional.of(balanceChange));
+        when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
+        when(balanceChangeRepository.findById(balanceChangeId)).thenReturn(Optional.of(balanceChange));
 
         paymentService.completedBalanceChange(balanceChange);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
-        Mockito.verify(balanceChangeRepository, Mockito.never()).save(Mockito.any());
+        verify(clientRepository, never()).save(any());
+        verify(balanceChangeRepository, never()).save(any());
     }
 
     @Test
@@ -370,12 +373,12 @@ class PaymentServiceImplTest {
         balanceChange.setId(balanceChangeId);
         balanceChange.setAccount("abc123");
 
-        Mockito.when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.empty());
+        when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.empty());
 
         paymentService.failedBalanceChange(balanceChange);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
-        Mockito.verify(balanceChangeRepository, Mockito.never()).deleteById(Mockito.any());
+        verify(clientRepository, never()).save(any());
+        verify(balanceChangeRepository, never()).deleteById(any());
     }
 
     @Test
@@ -388,13 +391,13 @@ class PaymentServiceImplTest {
         balanceChange.setId(balanceChangeId);
         balanceChange.setAccount("abc123");
 
-        Mockito.when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
-        Mockito.when(balanceChangeRepository.findById(balanceChangeId)).thenReturn(Optional.empty());
+        when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
+        when(balanceChangeRepository.findById(balanceChangeId)).thenReturn(Optional.empty());
 
         paymentService.failedBalanceChange(balanceChange);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
-        Mockito.verify(balanceChangeRepository, Mockito.never()).deleteById(Mockito.any());
+        verify(clientRepository, never()).save(any());
+        verify(balanceChangeRepository, never()).deleteById(any());
     }
 
     @Test
@@ -408,12 +411,12 @@ class PaymentServiceImplTest {
         balanceChange.setStatus(BalanceChangeStatus.COMPLETED);
         balanceChange.setAccount("abc123");
 
-        Mockito.when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
-        Mockito.when(balanceChangeRepository.findById(balanceChangeId)).thenReturn(Optional.of(balanceChange));
+        when(clientRepository.findByAccountNumber("abc123")).thenReturn(Optional.of(client));
+        when(balanceChangeRepository.findById(balanceChangeId)).thenReturn(Optional.of(balanceChange));
 
         paymentService.failedBalanceChange(balanceChange);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
-        Mockito.verify(balanceChangeRepository, Mockito.never()).deleteById(Mockito.any());
+        verify(clientRepository, never()).save(any());
+        verify(balanceChangeRepository, never()).deleteById(any());
     }
 }

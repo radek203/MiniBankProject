@@ -22,8 +22,6 @@ export class AccountService {
         this.httpService.get<Client[]>('client/' + id).subscribe({
             next: (response) => {
                 this.accounts = [];
-                this.showTransfers = [];
-                this.showBalanceChanges = [];
                 response.forEach(account => {
                     this.loadSingleAccount(account);
                 });
@@ -43,6 +41,8 @@ export class AccountService {
                 } else {
                     this.accounts.push(response);
                 }
+                this.showTransfers = this.showTransfers.filter(transfer => transfer !== response.accountNumber);
+                this.showBalanceChanges = this.showBalanceChanges.filter(balanceChange => balanceChange !== response.accountNumber);
             },
             error: (error) => {
                 console.error('Error fetching account:', error);
@@ -91,12 +91,12 @@ export class AccountService {
 
     getTransfer(accountNumber: string, id: string) {
         const client = this.getOwnerByAccountNumber(accountNumber);
-        return this.httpService.get<Transfer>(getBranchUrl(client?.branch) + '/transfer/transfer/' + id);
+        return this.httpService.get<Transfer>(getBranchUrl(client?.branch) + '/transfer/transfer/' + client?.accountNumber + '/' + id);
     }
 
     getBalanceChange(accountNumber: string, id: string) {
         const client = this.getOwnerByAccountNumber(accountNumber);
-        return this.httpService.get<BalanceChange>(getBranchUrl(client?.branch) + '/transfer/balance/' + id);
+        return this.httpService.get<BalanceChange>(getBranchUrl(client?.branch) + '/transfer/balance/' + client?.accountNumber + '/' + id);
     }
 
     loadTransfers(accountNumber: string) {

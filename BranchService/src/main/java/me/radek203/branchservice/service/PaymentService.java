@@ -11,10 +11,11 @@ public interface PaymentService {
     /**
      * Retrieves a transfer operation by its unique identifier.
      *
-     * @param id The unique identifier of the transfer operation.
+     * @param id     The unique identifier of the transfer operation.
+     * @param userId the user identifier of the client
      * @return A Transfer object representing the transfer operation.
      */
-    Transfer getTransfer(UUID id);
+    Transfer getTransfer(String account, UUID id, int userId);
 
     /**
      * Creates a transfer operation between two accounts.
@@ -22,9 +23,10 @@ public interface PaymentService {
      * @param fromAccount The account number from which to transfer.
      * @param toAccount   The account number to which to transfer.
      * @param amount      The amount to be transferred.
+     * @param userId      the user identifier of the client
      * @return A Transfer object representing the transfer operation.
      */
-    Transfer makeTransfer(String fromAccount, String toAccount, double amount);
+    Transfer makeTransfer(String fromAccount, String toAccount, double amount, int userId);
 
     /**
      * Creates a payment operation for a given credit card and service.
@@ -37,12 +39,13 @@ public interface PaymentService {
     Transfer makePaymentTransfer(String fromAccount, UUID service, double amount);
 
     /**
-     * Retrieves a transfers associated with a given account.
+     * Retrieves transfers associated with a given account.
      *
      * @param account The account number associated with the transfer.
+     * @param userId  the user identifier of the client
      * @return A Transfer object representing the transfer operation.
      */
-    List<Transfer> getTransfersByAccount(String account);
+    List<Transfer> getTransfersByAccount(String account, int userId);
 
     /**
      * Creates a transfer operation for a given transfer object.
@@ -68,36 +71,41 @@ public interface PaymentService {
     /**
      * Retrieves a balance change operation by its unique identifier.
      *
-     * @param id The unique identifier of the balance change operation.
+     * @param account The account number associated with the balance change operation.
+     * @param id      The unique identifier of the balance change operation.
+     * @param userId  the user identifier of the client
      * @return A BalanceChange object representing the balance change operation.
      */
-    BalanceChange getBalanceChange(UUID id);
+    BalanceChange getBalanceChange(String account, UUID id, int userId);
 
     /**
      * Creates a deposit operation for a given account and amount.
      *
      * @param account The account number to which to deposit.
      * @param amount  The amount to deposit.
+     * @param userId  the user identifier of the client
      * @return A BalanceChange object representing the deposit operation.
      */
-    BalanceChange makeDeposit(String account, double amount);
+    BalanceChange makeDeposit(String account, double amount, int userId);
 
     /**
      * Creates a withdrawal operation for a given account and amount.
      *
      * @param account The account number from which to withdraw.
      * @param amount  The amount to withdraw.
+     * @param userId  the user identifier of the client
      * @return A BalanceChange object representing the withdrawal operation.
      */
-    BalanceChange makeWithdraw(String account, double amount);
+    BalanceChange makeWithdraw(String account, double amount, int userId);
 
     /**
      * Retrieves a list of balance changes for a given account.
      *
-     * @param account The account number for which to retrieve balance changes.
+     * @param account The account number for which to retrieve the balance changes.
+     * @param userId  the user identifier of the client
      * @return A list of BalanceChange objects associated with the specified account.
      */
-    List<BalanceChange> getBalanceChanges(String account);
+    List<BalanceChange> getBalanceChanges(String account, int userId);
 
     /**
      * Handles the completion of a balance change operation.

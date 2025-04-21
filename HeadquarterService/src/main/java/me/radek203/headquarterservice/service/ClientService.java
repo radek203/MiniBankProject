@@ -33,10 +33,11 @@ public interface ClientService {
     /**
      * Get all clients by user ID.
      *
-     * @param userId the ID of the user
+     * @param userId       the ID of the user
+     * @param userIdHeader the ID of the user from the header
      * @return a list of clients associated with the specified user ID
      */
-    List<Client> getClientsByUserId(int userId);
+    List<Client> getClientsByUserId(int userId, int userIdHeader);
 
     /**
      * Get all account numbers by user ID.

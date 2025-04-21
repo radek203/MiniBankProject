@@ -1,6 +1,7 @@
 package me.radek203.branchservice.client;
 
 import me.radek203.branchservice.exception.ResourceInvalidException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.function.BiFunction;
@@ -14,7 +15,7 @@ public interface Client {
 
     default <K, V> V getResponse(String error, Function<K, ResponseEntity<V>> consumer, K key) {
         ResponseEntity<V> responseEntity = consumer.apply(key);
-        if (responseEntity.getBody() == null) {
+        if (responseEntity.getBody() == null && !responseEntity.getStatusCode().isSameCodeAs(HttpStatus.NO_CONTENT)) {
             throw new ResourceInvalidException(error);
         }
         return responseEntity.getBody();
@@ -22,7 +23,7 @@ public interface Client {
 
     default <K1, K2, V> V getResponse(String error, BiFunction<K1, K2, ResponseEntity<V>> consumer, K1 key1, K2 key2) {
         ResponseEntity<V> responseEntity = consumer.apply(key1, key2);
-        if (responseEntity.getBody() == null) {
+        if (responseEntity.getBody() == null && !responseEntity.getStatusCode().isSameCodeAs(HttpStatus.NO_CONTENT)) {
             throw new ResourceInvalidException(error);
         }
         return responseEntity.getBody();

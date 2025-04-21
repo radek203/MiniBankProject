@@ -54,6 +54,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                                     httpHeaders.remove("X-Username");
                                     httpHeaders.remove("X-Role");
                                     httpHeaders.remove("X-Email");
+                                    httpHeaders.remove("X-Internal-Auth");
                                 })
                                 .header("X-UserId", String.valueOf(response.getId()))
                                 .header("X-Username", response.getUsername())

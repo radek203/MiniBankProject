@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,8 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -41,7 +39,7 @@ class UserServiceImplTest {
     @Test
     void getUserByUsername_shouldReturnUserWhenUserExists() {
         String username = "user123";
-        Mockito.when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         User result = userService.getUserByUsername(username);
 
@@ -53,7 +51,7 @@ class UserServiceImplTest {
     @Test
     void getUserByUsername_shouldThrowExceptionWhenUserNotFound() {
         String username = "user123";
-        Mockito.when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> userService.getUserByUsername(username));
 
@@ -65,7 +63,7 @@ class UserServiceImplTest {
     @Test
     void getUserDetailsService_shouldReturnUserDetailsService() {
         String username = "user123";
-        Mockito.when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         UserDetailsService userDetailsService = userService.getUserDetailsService();
 

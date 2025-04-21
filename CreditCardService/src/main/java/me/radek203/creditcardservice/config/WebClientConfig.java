@@ -10,7 +10,9 @@ import me.radek203.creditcardservice.exception.ErrorDetails;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
@@ -41,7 +43,7 @@ public class WebClientConfig {
 
     @Bean
     public WebClient hqWebClient() {
-        return webClientBuilder().baseUrl("http://headquarter-service").filter(errorHandlingFilter()).build();
+        return webClientBuilder().baseUrl("http://headquarter-service").filter(internalAuthFilter()).filter(errorHandlingFilter()).build();
     }
 
     @Bean
@@ -53,7 +55,25 @@ public class WebClientConfig {
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(internalAuthInterceptor());
+        return restTemplate;
+    }
+
+    private ClientHttpRequestInterceptor internalAuthInterceptor() {
+        return (request, body, execution) -> {
+            request.getHeaders().add("X-Internal-Auth", "credit-card-service");
+            return execution.execute(request, body);
+        };
+    }
+
+    private ExchangeFilterFunction internalAuthFilter() {
+        return (request, next) -> {
+            ClientRequest authenticatedRequest = ClientRequest.from(request)
+                    .header("X-Internal-Auth", "credit-card-service")
+                    .build();
+            return next.exchange(authenticatedRequest);
+        };
     }
 
     private ExchangeFilterFunction errorHandlingFilter() {
@@ -62,7 +82,7 @@ public class WebClientConfig {
                 return clientResponse
                         .bodyToMono(String.class)
                         .flatMap(errorBody -> {
-                            if (clientResponse.statusCode().is5xxServerError()) {
+                            if (clientResponse.statusCode().isError()) {
                                 ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "error/server-error", "", "", "");
                                 return Mono.error(new ClientException(errorDetails, clientResponse.statusCode()));
                             }

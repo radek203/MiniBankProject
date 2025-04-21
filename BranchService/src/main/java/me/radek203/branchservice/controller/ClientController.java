@@ -28,8 +28,8 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClient(@PathVariable UUID id) {
-        return ResponseEntity.ok(clientService.getClientById(id));
+    public ResponseEntity<Client> getClient(@PathVariable UUID id, @RequestHeader("X-UserId") int userId) {
+        return ResponseEntity.ok(clientService.getClientById(id, userId));
     }
 
     @PutMapping("/update/{id}")
@@ -39,8 +39,14 @@ public class ClientController {
     }
 
     @PostMapping("/create/card/{account}")
-    public ResponseEntity<CreditCard> createCreditCard(@PathVariable String account) {
-        return ResponseEntity.ok(clientService.orderCreditCard(account));
+    public ResponseEntity<CreditCard> createCreditCard(@PathVariable String account, @RequestHeader("X-UserId") int userId) {
+        return ResponseEntity.ok(clientService.orderCreditCard(account, userId));
+    }
+
+    @DeleteMapping("/delete/card/{number}")
+    public ResponseEntity<Void> deleteCreditCard(@PathVariable String number, @RequestHeader("X-UserId") int userId) {
+        clientService.deleteCreditCard(number, userId);
+        return ResponseEntity.noContent().build();
     }
 
 }

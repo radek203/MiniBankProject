@@ -46,8 +46,8 @@ public class AuthController {
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody final UserUpdateDTO user, @PathVariable final int userId) {
-        final UserDTO savedUser = UserMapper.mapUserToUserDTO(authService.updateUser(userId, user));
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody final UserUpdateDTO user, @PathVariable final int userId, @RequestHeader("X-UserId") int userIdHeader) {
+        final UserDTO savedUser = UserMapper.mapUserToUserDTO(authService.updateUser(userId, user, userIdHeader));
         return ResponseEntity.ok(savedUser);
     }
 

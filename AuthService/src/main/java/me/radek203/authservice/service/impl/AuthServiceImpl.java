@@ -77,7 +77,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User updateUser(int userId, UserUpdateDTO user) {
+    public User updateUser(int userId, UserUpdateDTO user, int userIdHeader) {
+        if (userId != userIdHeader) {
+            throw new ResourceNotFoundException("error/user-not-found", userId);
+        }
         final User finalUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("error/user-not-found", userId));
 
         try {

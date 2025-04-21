@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -51,10 +50,10 @@ class ClientServiceImplTest {
         client.setCity("Kraków");
 
         List<String> existingAccountNumbers = List.of("11111111111111111111111111");
-        Mockito.when(clientRepository.getAllAccountNumbers()).thenReturn(existingAccountNumbers);
-        Mockito.when(appProperties.getBranchId()).thenReturn(1001);
+        when(clientRepository.getAllAccountNumbers()).thenReturn(existingAccountNumbers);
+        when(appProperties.getBranchId()).thenReturn(1001);
 
-        Mockito.when(clientRepository.save(Mockito.any(Client.class)))
+        when(clientRepository.save(any(Client.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         Client savedClient = clientService.saveClient(client);
@@ -66,7 +65,7 @@ class ClientServiceImplTest {
         assertEquals(0, savedClient.getBalanceReserved());
         assertEquals(1001, savedClient.getBranch());
 
-        Mockito.verify(kafkaSenderService).sendMessage(
+        verify(kafkaSenderService).sendMessage(
                 eq("headquarter-client-create"),
                 anyString(),
                 eq(savedClient)
@@ -77,15 +76,21 @@ class ClientServiceImplTest {
     void shouldOrderCreditCardSuccessfully() {
         String accountNumber = "12345678901234567890123456";
         CreditCard expectedCard = new CreditCard("4111111111111111", accountNumber, "12/30", "123");
-        Mockito.when(appProperties.getBranchId()).thenReturn(2002);
-        Mockito.when(creditCardClient.getResponse(
-                        eq("error/credit-card-creation"),
-                        any(),
-                        eq(2002),
-                        eq(accountNumber)))
+        when(appProperties.getBranchId()).thenReturn(2002);
+        when(creditCardClient.getResponse(
+                eq("error/credit-card-creation"),
+                any(),
+                eq(2002),
+                eq(accountNumber)))
                 .thenReturn(expectedCard);
 
-        CreditCard result = clientService.orderCreditCard(accountNumber);
+        Client client = new Client();
+        client.setAccountNumber(accountNumber);
+        client.setUserId(1);
+
+        when(clientRepository.findByAccountNumberAndUserId(accountNumber, client.getUserId())).thenReturn(Optional.of(client));
+
+        CreditCard result = clientService.orderCreditCard(accountNumber, client.getUserId());
 
         assertEquals(expectedCard, result);
     }
@@ -97,22 +102,22 @@ class ClientServiceImplTest {
         client.setId(clientId);
         client.setStatus(ClientStatus.CREATING);
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
 
         clientService.completedClient(clientId);
 
         assertEquals(ClientStatus.ACTIVE, client.getStatus());
-        Mockito.verify(clientRepository).save(client);
+        verify(clientRepository).save(client);
     }
 
     @Test
     void shouldNotCompleteClientWhenClientDoesNotExist() {
         UUID clientId = UUID.randomUUID();
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
 
         clientService.completedClient(clientId);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
+        verify(clientRepository, never()).save(any());
     }
 
     @Test
@@ -122,11 +127,11 @@ class ClientServiceImplTest {
         client.setId(clientId);
         client.setStatus(ClientStatus.ACTIVE);
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
 
         clientService.completedClient(clientId);
 
-        Mockito.verify(clientRepository, Mockito.never()).save(Mockito.any());
+        verify(clientRepository, never()).save(any());
     }
 
     @Test
@@ -135,7 +140,7 @@ class ClientServiceImplTest {
 
         clientService.failedClient(clientId);
 
-        Mockito.verify(clientRepository).deleteById(clientId);
+        verify(clientRepository).deleteById(clientId);
     }
 
     @Test
@@ -144,6 +149,7 @@ class ClientServiceImplTest {
 
         Client existingClient = new Client();
         existingClient.setId(clientId);
+        existingClient.setUserId(1);
         existingClient.setFirstName("Old");
         existingClient.setLastName("Name");
         existingClient.setAddress("Old Address");
@@ -151,14 +157,15 @@ class ClientServiceImplTest {
         existingClient.setPhone("000000000");
 
         Client updatedData = new Client();
+        updatedData.setUserId(1);
         updatedData.setFirstName("New");
         updatedData.setLastName("Name");
         updatedData.setAddress("New Address");
         updatedData.setCity("New City");
         updatedData.setPhone("123456789");
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.of(existingClient));
-        Mockito.when(clientRepository.save(Mockito.any(Client.class)))
+        when(clientRepository.findByIdAndUserId(clientId, updatedData.getUserId())).thenReturn(Optional.of(existingClient));
+        when(clientRepository.save(any(Client.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         Client result = clientService.updateClient(clientId, updatedData);
@@ -169,15 +176,16 @@ class ClientServiceImplTest {
         assertEquals("New City", result.getCity());
         assertEquals("123456789", result.getPhone());
 
-        Mockito.verify(clientRepository).save(existingClient);
+        verify(clientRepository).save(existingClient);
     }
 
     @Test
     void shouldThrowExceptionWhenClientNotFound() {
         UUID clientId = UUID.randomUUID();
         Client updatedData = new Client();
+        updatedData.setUserId(1);
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+        when(clientRepository.findByIdAndUserId(clientId, updatedData.getUserId())).thenReturn(Optional.empty());
 
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> clientService.updateClient(clientId, updatedData));
@@ -192,12 +200,14 @@ class ClientServiceImplTest {
 
         Client client = new Client();
         client.setId(clientId);
+        client.setUserId(1);
         client.setFirstName("Anna");
         client.setLastName("Nowak");
+        client.setAccountNumber("12345678901234567890123456");
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+        when(clientRepository.findByIdAndUserId(clientId, client.getUserId())).thenReturn(Optional.of(client));
 
-        Client result = clientService.getClientById(clientId);
+        Client result = clientService.getClientById(clientId, client.getUserId());
 
         assertNotNull(result);
         assertEquals(clientId, result.getId());
@@ -209,10 +219,10 @@ class ClientServiceImplTest {
     void shouldThrowExceptionWhenClientDoesNotExist() {
         UUID clientId = UUID.randomUUID();
 
-        Mockito.when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+        when(clientRepository.findByIdAndUserId(clientId, 0)).thenReturn(Optional.empty());
 
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
-                () -> clientService.getClientById(clientId));
+                () -> clientService.getClientById(clientId, 0));
 
         assertEquals("error/account-not-found", ex.getMessage());
         assertEquals(clientId.toString(), ex.getData());
