@@ -77,15 +77,11 @@ public class WebClientConfig {
                 return clientResponse
                         .bodyToMono(String.class)
                         .flatMap(errorBody -> {
-                            if (clientResponse.statusCode().isError()) {
-                                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "error/server-error", "", "", "");
-                                return Mono.error(new ClientException(errorDetails, clientResponse.statusCode()));
-                            }
                             ErrorDetails errorDetails;
                             try {
                                 errorDetails = objectMapper.readValue(errorBody, ErrorDetails.class);
                             } catch (JsonProcessingException e) {
-                                return Mono.error(new RuntimeException(e));
+                                errorDetails = new ErrorDetails(LocalDateTime.now(), "error/server-error", "", "", "");
                             }
                             return Mono.error(new ClientException(errorDetails, clientResponse.statusCode()));
                         });
