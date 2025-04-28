@@ -137,10 +137,15 @@ class ClientServiceImplTest {
     @Test
     void shouldDeleteClientWhenFailed() {
         UUID clientId = UUID.randomUUID();
+        Client client = new Client();
+        client.setId(clientId);
+        client.setStatus(ClientStatus.CREATING);
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
 
         clientService.failedClient(clientId);
 
-        verify(clientRepository).deleteById(clientId);
+        verify(clientRepository).delete(client);
     }
 
     @Test

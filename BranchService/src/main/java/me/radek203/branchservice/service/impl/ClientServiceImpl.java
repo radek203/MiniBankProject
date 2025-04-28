@@ -10,6 +10,8 @@ import me.radek203.branchservice.exception.ResourceNotFoundException;
 import me.radek203.branchservice.repository.ClientRepository;
 import me.radek203.branchservice.service.ClientService;
 import me.radek203.branchservice.service.KafkaSenderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -25,6 +27,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final AppProperties appProperties;
     private final CreditCardClient creditCardClient;
+    private final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
 
     /**
      * We do not check if the generated account number exists in other branches, We can do it but, for our example,
@@ -99,6 +102,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void failedClient(UUID id) {
-        clientRepository.deleteById(id);
+        Optional<Client> clientOptional = clientRepository.findById(id);
+        if (clientOptional.isEmpty() || clientOptional.get().getStatus() == ClientStatus.ACTIVE) {
+            return;
+        }
+        logger.warn("Client creation failed: {} cancelled.", id);
+        Client client = clientOptional.get();
+        clientRepository.delete(client);
     }
 }

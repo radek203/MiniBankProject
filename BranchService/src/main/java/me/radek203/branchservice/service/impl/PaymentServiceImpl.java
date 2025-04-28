@@ -12,6 +12,8 @@ import me.radek203.branchservice.repository.ClientRepository;
 import me.radek203.branchservice.repository.TransferRepository;
 import me.radek203.branchservice.service.KafkaSenderService;
 import me.radek203.branchservice.service.PaymentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final ClientRepository clientRepository;
     private final AppProperties appProperties;
     private final HeadquarterClient hqClient;
+    private final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     private Client getClientByAccountAndUserId(String account, int userId) {
         return clientRepository.findByAccountNumberAndUserId(account, userId).orElseThrow(() -> new ResourceNotFoundException("error/invalid-account"));
@@ -122,6 +125,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (transferFound.isEmpty()) {
             return;
         }
+        logger.warn("Transfer failed: {} cancelled.", transfer.getId());
         transferRepository.deleteById(transfer.getId());
 
         if (transfer.getFromBranchId() == appProperties.getBranchId()) {
@@ -253,6 +257,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (balanceChangeOptional.isEmpty() || balanceChangeOptional.get().getStatus() == BalanceChangeStatus.COMPLETED) {
             return;
         }
+        logger.warn("Balance Change failed: {} cancelled.", balanceChange.getId());
         Client client = clientOptional.get();
         client.setBalanceReserved(client.getBalanceReserved() + balanceChange.getAmount());
         if (balanceChange.getAmount() < 0) {
