@@ -49,7 +49,6 @@ CREATE TABLE dbo.transfer
     date           bigint           not null,
     from_account   varchar(255),
     from_branch_id int              not null,
-    message        varchar(255),
     status         smallint
         check ([status] >= 0 AND [status] <= 2),
     to_account     varchar(255),
